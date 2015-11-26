@@ -24,12 +24,12 @@ public class MandelbrotFunction extends AbstractFractalFunction {
 	}
 
 	public void reset() {
-		this.left = -2.0f;
-		this.top = -1.5f;
-		this.right = 1.0f;
-		this.bottom = 1.5f;
+		double left = -2.5f;
+		double top = -1.75f;
+		double right = 1.0f;
+		double bottom = 1.75f;
 
-		this.fractalRegion = new Rectangle.Float(this.left, this.top, this.right-this.left, this.bottom-this.top);
+		this.fractalRegion = new Rectangle.Double(left, top, right-left, bottom-top);
 	}
 
 	/**

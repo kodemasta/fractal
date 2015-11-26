@@ -16,20 +16,20 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 	 * converge or diverge at a particular rate based on the initial location and iterative 
 	 * function in the complex plane. The 'velocity' of the iteration escape is the metric used to
 	 * map an RGB color for function display **/
-	protected float escapeRadius = 4.0f;
+	protected double escapeRadius = 4.0;
 
 	/** This is a maximum limit on number of iterations if escape radius not met. This is a critical
 	 * parameter and directly maps to the runtime memory footprint of the application. Larger values
 	 * allow for finer grain detail iteration orbits before they are considered escaped.   **/
-	protected short maxIterations = 1024;
+	protected short maxIterations = 2048;
 	
 	protected FractalConfig config = new FractalConfig();
 
 	/** the rectangular region that the iterative method is defined over **/
-	protected float top, bottom, left, right;
+	//protected float top, bottom, left, right;
 
 	/** complex plane region iterated over **/
-	protected Rectangle.Float fractalRegion;
+	protected Rectangle.Double fractalRegion;
 
 	/** The complex quadratic constant used during iteration **/
 	public Complex c = new Complex(0, 0);
@@ -41,11 +41,11 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 		return this.maxIterations;
 	}
 
-	public Rectangle.Float getFractalRegion() {
+	public Rectangle.Double getFractalRegion() {
 		return this.fractalRegion;
 	}
 	
-	public void setFractalRegion(Rectangle.Float region) {
+	public void setFractalRegion(Rectangle.Double region) {
 		this.fractalRegion.setRect(region);
 	}
 
@@ -66,11 +66,11 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 	/** 
 	 * Set the center point of where a particular rectangular region of the function is to be calculated.
 	 **/
-	public void setCenter(Point.Float center) {
-		float offsetX = center.x - (float)fractalRegion.getCenterX();
-		float offsetY = center.y - (float)fractalRegion.getCenterY();
+	public void setCenter(Point.Double center) {
+		double offsetX = center.x - (double)fractalRegion.getCenterX();
+		double offsetY = center.y - (double)fractalRegion.getCenterY();
 
-		this.fractalRegion.setRect(fractalRegion.x-offsetX,
+		this.fractalRegion.setRect(fractalRegion.x - offsetX,
 				fractalRegion.y - offsetY,
 				this.fractalRegion.getWidth(),
 				this.fractalRegion.getHeight());
@@ -79,24 +79,35 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 		//		center.y - this.fractalRegion.centerY());
 	}
 
+	/** offset region by percentage **/
+	public void setOffset(double x, double y){
+		double xOffset = (double)(fractalRegion.getWidth() * x);
+		double yOffset = (double)(fractalRegion.getHeight() * y);
+		setCenter(new Point.Double((double) (fractalRegion.getCenterX() - xOffset), (double) (fractalRegion.getCenterY() - yOffset)));
+
+		//if (x != 0.0f )
+		//	setZoom(.1f);
+	}
+
+
 	/**
 	 * Randomly create a region in the complex boundary of interest.
 	 */
 	public void setRandomRegion(boolean centered) {
-		reset();
-		boolean validCenter = false;
-		final Complex center = new Complex(0,0);
-
-		if (!centered){
-			while (!validCenter){
-				center.setValues(Math.random() * (this.right-this.left) - this.right, Math.random() * (this.bottom-this.top) - this.bottom);
-				validCenter = !isPointInCardioidBulbs(center);
-			}
-			
-			setCenter(new Point.Float((float)center.getReal(), (float)center.getImaginary()));
-			}
-		final float zoom = (float) Math.random();
-		setZoom(zoom);
+//		reset();
+//		boolean validCenter = false;
+//		final Complex center = new Complex(0,0);
+//
+//		if (!centered){
+//			while (!validCenter){
+//				center.setValues(Math.random() * (this.right-this.left) - this.right, Math.random() * (this.bottom-this.top) - this.bottom);
+//				validCenter = !isPointInCardioidBulbs(center);
+//			}
+//
+//			setCenter(new Point.Float((float)center.getReal(), (float)center.getImaginary()));
+//			}
+//		final float zoom = (float) Math.random();
+//		setZoom(zoom);
 	}
 
 	/**
@@ -118,11 +129,11 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 	/**
 	 * Set region zoom about the center point of defined boundary region.
 	 */
-	public void setZoom(float zoom) {
-		final float centerX = (float)this.fractalRegion.getCenterX();
-		final float centerY = (float)this.fractalRegion.getCenterY();
-		final float halfWidth = (float)this.fractalRegion.getWidth() * zoom * .5f;
-		final float halfHeight = (float)this.fractalRegion.getHeight() * zoom * .5f;
+	public void setZoom(double zoom) {
+		final double centerX = (double)this.fractalRegion.getCenterX();
+		final double centerY = (double)this.fractalRegion.getCenterY();
+		final double halfWidth = (double)this.fractalRegion.getWidth() * zoom * .5f;
+		final double halfHeight = (double)this.fractalRegion.getHeight() * zoom * .5f;
 
 		this.fractalRegion.setRect(centerX - halfWidth, centerY - halfHeight, halfWidth*2f, halfHeight*2f );
 		//this.fractalRegion.left = centerX - halfWidth;
@@ -131,10 +142,10 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 		//this.fractalRegion.bottom = centerY + halfheight;
 	}
 	
-	public void setScale(float screenAspectRatio)
+	public void setScale(double screenAspectRatio)
 	{
-		float left =  (float)this.fractalRegion.getX()*screenAspectRatio;
-		float right =  (float)this.fractalRegion.getY()*screenAspectRatio;
+		double left =  (double)this.fractalRegion.getX()*screenAspectRatio;
+		double right =  (double)this.fractalRegion.getY()*screenAspectRatio;
 
 		this.fractalRegion.setRect(left, this.fractalRegion.getY(), right-left, this.fractalRegion.getHeight());
 

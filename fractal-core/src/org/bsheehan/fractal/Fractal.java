@@ -96,13 +96,13 @@ public class Fractal implements IFractal {
 	}
 
 	private boolean generate(ByteBuffer buffer, int width, int height) {
-		final float kConvertPixelToRealAxis = (float)this.fractalIterationFunction.getFractalRegion().getWidth()
+		final double kConvertPixelToRealAxis = (double)this.fractalIterationFunction.getFractalRegion().getWidth()
 		/ width;
-		final float kConvertPixelToImagAxis = (float)this.fractalIterationFunction.getFractalRegion().getHeight()
+		final double kConvertPixelToImagAxis = (double)this.fractalIterationFunction.getFractalRegion().getHeight()
 		/ height;
 
 		final int maxIterations = this.fractalIterationFunction.getMaxIterations();
-		final Rectangle.Float fractalRegion = this.fractalIterationFunction.getFractalRegion();
+		final Rectangle.Double fractalRegion = this.fractalIterationFunction.getFractalRegion();
 		for (int i = 0; i < maxIterations; ++i)
 			this.iterationHistogram[i] = 0;
 		// determine number of iterations for each fractal pixel on complex
@@ -119,11 +119,12 @@ public class Fractal implements IFractal {
 				+ fractalRegion.getMinX(); //left
 				final short numIterations = this.fractalIterationFunction.iterate(c);
 				this.iterationHistogram[numIterations]++;
-				this.iterationBuffer[pixelX][pixelY] = numIterations;
+				this.iterationBuffer[pixelY][pixelX] = numIterations;
 			}
 		}
 		return true;
 	}
+
 
 	/**
 	 * Sample specific pnts to detect if there is enough variation in the fractal

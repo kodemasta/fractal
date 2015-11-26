@@ -25,7 +25,8 @@ public class ColorSet {
 		/** **/
 		RANDOM_COLORMAP_FIVE, 
 		/** **/
-		RANDOM_COLORMAP_SIX
+		RANDOM_COLORMAP_SIX,
+		RANDOM_COLORMAP_SEVEN
 	}
 
 	/** 
@@ -96,11 +97,12 @@ public class ColorSet {
 		final int[] lengths = { length1, length2, length3, length4 };
 
 		switch (colorSetType) {
+
+			//black random white random, black
 		case RANDOM_COLORMAP_ONE: {
 
 			final int[] colorStart = { 0, 0, 0 };
-			final int[] color2 = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
+			final int[] color2 = { (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255) };
 			final int[] color3 = { 255, 255, 255 };
 			final int[] color4 = { (int) (Math.random() * 255),
 					(int) (Math.random() * 255), (int) (Math.random() * 255) };
@@ -172,6 +174,17 @@ public class ColorSet {
 			final int[] color3 = { 255, 255, 255 };
 			final int[] color4 = { 0, 0, 0 };
 			final int[] colorEnd = { 255, 255, 255 };
+			final int[][] colors = { colorStart, color2, color3, color4,
+					colorEnd };
+			createColorMap(colors, lengths);
+		}
+		break;
+		case RANDOM_COLORMAP_SEVEN: {
+			final int[] colorStart = { 255, 255, 255 };
+			final int[] color2 = { 200, 200, 200 };
+			final int[] color3 = { 150, 150, 150 };
+			final int[] color4 = { 100, 100, 100 };
+			final int[] colorEnd = { 50, 50, 50 };
 			final int[][] colors = { colorStart, color2, color3, color4,
 					colorEnd };
 			createColorMap(colors, lengths);

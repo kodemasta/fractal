@@ -21,7 +21,7 @@ public interface IIteratedFunction {
 	 * Return rectangular region where fractal is defined
 	 * @return
 	 */
-	Rectangle2D.Float getFractalRegion();
+	Rectangle2D.Double getFractalRegion();
 	
 	FractalConfig getFractalConfig();
 
@@ -42,13 +42,13 @@ public interface IIteratedFunction {
 	 * Adjust the center point of the region of interest for this iterated system.
 	 * @param center
 	 */
-	void setCenter(Point.Float center);
+	void setCenter(Point.Double center);
 
 	/**
 	 * Adjust the region of interest for this iterated system by zooming around the
 	 * existing center point for this fractal.
 	 */
-	void setZoom(float zoom);
+	void setZoom(double zoom);
 
 	/**
 	 * Select a region in the defined boundary for this iterative function. The idea is to locate cool looking
@@ -64,8 +64,11 @@ public interface IIteratedFunction {
 	 */
 	short iterate(Complex z);
 
-	void setScale(float screenAspectRatio);
+	void setScale(double screenAspectRatio);
 
-	void setFractalRegion(Rectangle.Float coolRegion);
+	void setFractalRegion(Rectangle.Double coolRegion);
+
+	/** offset region by percentage **/
+	void setOffset(double x, double y);
 
 }
