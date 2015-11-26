@@ -38,11 +38,9 @@ public class ColorSet {
 		this.colors_red = new byte[maxIterations];
 		this.colors_green = new byte[maxIterations];
 		this.colors_blue = new byte[maxIterations];
-		for (int i = 0; i < maxIterations; i++) {
-			this.colors_red[i] = 0;
-			this.colors_green[i] = 0;
-			this.colors_blue[i] = 0;
-		}
+
+		setColorSet(ColorSetType.RANDOM_COLORMAP_ONE);
+
 	}
 
 	/**
@@ -90,27 +88,41 @@ public class ColorSet {
 	 * @param colorSetType
 	 */
 	private void setColorSet(ColorSetType colorSetType) {
-		final int length1 = 16;
-		final int length2 = 32;
-		final int length3 = 64;
-		final int length4 = this.maxIterations - length1 - length2 - length3;
+		final int length1 = this.maxIterations/64;
+		final int length2 = this.maxIterations/32;
+		final int length3 = this.maxIterations/16;
+		final int length4 = this.maxIterations-length1-length2-length3;
 		final int[] lengths = { length1, length2, length3, length4 };
+
+		final int[] WHITE = {255, 255, 255};
+		final int[] BLACK = {0, 0, 0};
+		final int[] BLUE = {0, 0, 255};
+		final int[] RED = {255, 0, 0};
+		final int[] GREEN = {0, 255, 0};
+		final int[] CYAN = {0, 255, 255};
+		final int[] MAGENTA = {255, 0, 255};
+		final int[] YELLOW = {255, 255, 0};
+		final int[] RANDOM_COLOR = { (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255) };
+
+
 
 		switch (colorSetType) {
 
 			//black random white random, black
 		case RANDOM_COLORMAP_ONE: {
 
-			final int[] colorStart = { 0, 0, 0 };
-			final int[] color2 = { (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] color3 = { 255, 255, 255 };
-			final int[] color4 = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] colorEnd = { 0, 0, 0 };
+			final int[] color1 = WHITE;
+			final int[] color2 = BLACK;
+			final int[] color3 = WHITE;
+			final int[] color4 = BLACK;
+			final int[] color5 = WHITE;
+			final int[] color6 = BLACK;
+			final int[] color7 = WHITE;
 
-			final int[][] colors = { colorStart, color2, color3, color4,
-					colorEnd };
-			createColorMap(colors, lengths);
+			final int[] lengths_one = { 256, 256, 256, 256, 256, 256, 256 };
+
+			final int[][] colors = { color1, color2, color3, color4, color5, color6, color7 };
+			createColorMap(colors, lengths_one);
 		}
 		break;
 		case RANDOM_COLORMAP_TWO: {

@@ -94,7 +94,7 @@ object Application extends Controller {
       fractal.getFractalFunction.setFractalRegion(rect)
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
-      fractal.setRandomColorSet()
+      //fractal.setRandomColorSet()
       fractal.generate()
       fractal.assignColors()
       val buffer: ByteBuffer = fractal.getBufferColors

@@ -43,10 +43,15 @@
 		   fractalRegion.y += fractalOffsetY
 
 		   if (zoom > 1) {
-		    fractalRegion.w /= zoom
-		    fractalRegion.h /= zoom
+		    fractalRegion.w /= 2
+		    fractalRegion.h /= 2
 		    fractalRegion.x += fractalRegion.w/2
 		    fractalRegion.y += fractalRegion.h/2
+		   } else if (zoom < 0) {
+		    fractalRegion.x -= fractalRegion.w/2
+		    fractalRegion.y -= fractalRegion.h/2
+		    fractalRegion.w *= 2
+		    fractalRegion.h *= 2
 		   }
            console.log("create updated region " + JSON.stringify(fractalRegion));
            console.log("scaled region " + fractalRegion.x + " " + fractalRegion.y + " to " +  (fractalRegion.x+fractalRegion.w) + " " + (fractalRegion.y+fractalRegion.h));
@@ -88,10 +93,15 @@
             });
         }
 
-        $('#MyButton').click(function(){
+        $('#ResetButton').click(function(){
             zoom = 1
             getFractals()
             createFractal(0,0)
+        });
+
+        $('#ZoomOutButton').click(function(){
+           zoom = -1
+           createFractal(0, 0);
         });
 
         $('#MyFractal').click(function(e){
@@ -116,7 +126,6 @@
     </div>
 </div>
 <div class="container">
-
     @content
 </div>
 

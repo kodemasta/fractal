@@ -25,12 +25,6 @@ public interface IFractal {
 	/** Set a color mapping for this fractal. This results in the displayed color palette. **/
 	public void setRandomColorSet();
 
-	/** First pass check to see if selected region is of visual interest **/
-	public boolean isInterestingAtAll(int w, int h);
-
-	/** Second pass check using histogram to determine if fractal region is of visual interest **/
-	public boolean isCoolEnough();
-
 	/**
 	 * Return pixel height of generated fractal
 	 * @return

@@ -27,29 +27,7 @@ public class FractalFactory {
 		return fractal;
 	}
 
-	/**
-	 * For a given fractal, try various zoom in and region crops to
-	 * locate a visually stunning section of the iterated complex system.
-	 * 
-	 * @param fractal - input fractal to zoom in on
-	 * @return
-	 */
-	static public void makeItCool(IFractal fractal, boolean centered, int w, int h) {
-		do {
-			do {
-				fractal.getFractalFunction().setRandomRegion(centered);
-				try {
-					Thread.sleep(100);
-				} catch (final InterruptedException e) {
-					// if we interrupt the sleeping thread an
-					// exception will get us here.
-					return;
-				}
-			} while (!fractal.isInterestingAtAll(w, h));
-			fractal.generate();
-		} while (!fractal.isCoolEnough());
 
-	}
 
 	/**
 	 * Once a cool fractal region has been located using makeItCool, a full color mapped
