@@ -1,7 +1,10 @@
 package org.bsheehan.fractal;
 
+
 import java.awt.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -12,6 +15,13 @@ import java.nio.ByteBuffer;
  * @description This creates and updates fractal instances for use in texture mapping. 
  */
 public class FractalFactory {
+
+	static public List<FractalInfo> getFractals() {
+		List<FractalInfo> fractals = new ArrayList<FractalInfo>();
+		MandelbrotFunction function = new MandelbrotFunction();
+		fractals.add(function.fractalInfo);
+		return fractals;
+	}
 
 	/**
 	 * Create an instance of a fractal generator class
@@ -41,7 +51,7 @@ public class FractalFactory {
 		//fractal.setDims(dim, dim);
 		fractal.generate();
 		// now that we have a cool region, lets assign a cool colormap
-		fractal.setRandomColorSet();
+		//fractal.setRandomColorSet();
 		fractal.assignColors();
 
 	}

@@ -23,12 +23,13 @@ public interface IFractal {
 	public void assignColors();
 
 	/** Set a color mapping for this fractal. This results in the displayed color palette. **/
-	public void setRandomColorSet();
 
-	/**
-	 * Return pixel height of generated fractal
-	 * @return
-	 */
+	void setColorSet(ColorSet colorSet);
+
+		/**
+         * Return pixel height of generated fractal
+         * @return
+         */
 	public int getHeight();
 
 	/** Retrieve the RGB buffer values for use in texture mapping **/

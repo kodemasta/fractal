@@ -1,6 +1,9 @@
 package org.bsheehan.fractal;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author bsheehan@baymoon.com
  * @date April 12, 2011
@@ -12,19 +15,24 @@ package org.bsheehan.fractal;
  **/
 public class ColorSet {
 
+	// arrays for holding individual RGB components of color map
+	protected byte colors_rgb[][];
+
+	// the color set arrays have to have enough resolution to map each iteration value of the
+	// complex iterated fractal. We store a local copy of the fractal functions range of iteration values
+	protected int maxIterations;
+
+	protected ColorSetType colorSetType;
+
 	/** enum for different color mapping alogrithms **/
 	public enum ColorSetType {
-		/** **/
-		RANDOM_COLORMAP_ONE, 
-		/** **/
-		RANDOM_COLORMAP_TWO, 
-		/** **/
-		RANDOM_COLORMAP_THREE, 
-		/** **/
-		RANDOM_COLORMAP_FOUR, 
-		/** **/
-		RANDOM_COLORMAP_FIVE, 
-		/** **/
+		COLORMAP_GRAY,
+		COLORMAP_EARTH,
+		COLORMAP_RANDOM,
+		COLORMAP_BLACK,
+		COLORMAP_WHITE,
+		RANDOM_COLORMAP_FOUR,
+		RANDOM_COLORMAP_FIVE,
 		RANDOM_COLORMAP_SIX,
 		RANDOM_COLORMAP_SEVEN
 	}
@@ -33,126 +41,139 @@ public class ColorSet {
 	 * Constructor
 	 * @param maxIterations
 	 */
-	public ColorSet(int maxIterations) {
-		this.maxIterations = maxIterations;
-		this.colors_red = new byte[maxIterations];
-		this.colors_green = new byte[maxIterations];
-		this.colors_blue = new byte[maxIterations];
-
-		setColorSet(ColorSetType.RANDOM_COLORMAP_ONE);
-
+	public ColorSet(int maxIterations, ColorSetType colorSetType) {
+		this.colorSetType = colorSetType;
+		setMaxIterations(maxIterations);
 	}
 
-	/**
-	 * For a given histogram, create a color mapping. The histogram can optioinally be used
-	 * to create an optimized color mapping.
-	 * @param histogram
-	 */
-	public void setRandomColorSet(int[] histogram) {
-		final int colorSetIndex = (int) (Math.random() * ColorSetType.values().length);
-		final ColorSetType colorSetType = ColorSetType.values()[colorSetIndex];
-		setColorSet(colorSetType);
+	public void setMaxIterations(int maxIterations) {
+		if (this.maxIterations != maxIterations) {
+			this.maxIterations = maxIterations;
+
+			this.colors_rgb = new byte[maxIterations][3];
+			setColorSet(this.colorSetType); //reset
+		}
 	}
+
 
 	/**
 	 * Return red part of color mapping
-	 * @param iterations
 	 * @return
 	 */
-	public byte getRed(int iterations) {
-		return this.colors_red[iterations];
+	public byte[][] getColors() {
+		return this.colors_rgb;
 	}
 
-	/**
-	 * Return blue part of color mapping
-	 * @param iterations
-	 * @return
-	 */
-	public byte getBlue(int iterations) {
-		return this.colors_blue[iterations];
-	}
-	/**
-	 * Return green part of color mapping
-	 * @param iterations
-	 * @return
-	 */
-	public byte getGreen(int iterations) {
-		return this.colors_green[iterations];
-	}
+	private byte[] createRandomColor(byte previousColor[], int maxSpan){
+		byte[] color = { (byte) (Math.random() * 255), (byte) (Math.random() * 255), (byte) (Math.random() * 255) };
 
-	/**
+		//make sure the new color is sufficiently different from previous color  clor componentrelative to possible span per
+		if (previousColor != null){
+			int delta = Math.abs(color[0] - previousColor[0]) + Math.abs(color[1] - previousColor[1]) + Math.abs(color[2] - previousColor[2]);
+			while (delta < maxSpan/8)
+				color = createRandomColor(previousColor, maxSpan);
+		}
+		return color;
+	}
+		/**
 	 * Select a particular colormap style to generate. Each mapping spans the
 	 * iteration range of the iterated complex fractal so there are unique colors for
 	 * each iteration escape level. Several randomly generated styles are available.
 	 * TODO: perhaps make this more easily extensible with subclass or delegation.
 	 * @param colorSetType
 	 */
-	private void setColorSet(ColorSetType colorSetType) {
-		final int length1 = this.maxIterations/64;
-		final int length2 = this.maxIterations/32;
-		final int length3 = this.maxIterations/16;
-		final int length4 = this.maxIterations-length1-length2-length3;
-		final int[] lengths = { length1, length2, length3, length4 };
+	public void setColorSet(ColorSetType colorSetType) {
 
-		final int[] WHITE = {255, 255, 255};
-		final int[] BLACK = {0, 0, 0};
-		final int[] BLUE = {0, 0, 255};
-		final int[] RED = {255, 0, 0};
-		final int[] GREEN = {0, 255, 0};
-		final int[] CYAN = {0, 255, 255};
-		final int[] MAGENTA = {255, 0, 255};
-		final int[] YELLOW = {255, 255, 0};
-		final int[] RANDOM_COLOR = { (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255) };
-
-
+		final byte[] WHITE = {(byte)255, (byte)255, (byte)255};
+		final byte[] BLACK = {0, 0, 0};
+		final byte[] BLUE = {0, 0, (byte)255};
+		final byte[] RED = {(byte)255, 0, 0};
+		final byte[] GREEN = {0, (byte)255, 0};
+		final byte[] CYAN = {0, (byte)255, (byte)255};
+		final byte[] MAGENTA = {(byte)255, 0, (byte)255};
+		final byte[] YELLOW = {(byte)255, (byte)255, 0};
+		final byte[] BROWN = {(byte)150, (byte)100, (byte)50};
+		final byte[] DARK_GREEN = {(byte)50, (byte)150, (byte)50};
+		final byte[] DARK_BLUE = {(byte)0, (byte)50, (byte)150};
 
 		switch (colorSetType) {
-
 			//black random white random, black
-		case RANDOM_COLORMAP_ONE: {
+		case COLORMAP_GRAY: {
+			List<byte[]> controlColors = new ArrayList<byte[]>();
+			controlColors.add(WHITE);
+			controlColors.add(BLACK);
+			controlColors.add(WHITE);
+			controlColors.add(BLACK);
+			controlColors.add(WHITE);
+			controlColors.add(BLACK);
+			controlColors.add(WHITE);
+			controlColors.add(BLACK);
 
-			final int[] color1 = WHITE;
-			final int[] color2 = BLACK;
-			final int[] color3 = WHITE;
-			final int[] color4 = BLACK;
-			final int[] color5 = WHITE;
-			final int[] color6 = BLACK;
-			final int[] color7 = WHITE;
-
-			final int[] lengths_one = { 256, 256, 256, 256, 256, 256, 256 };
-
-			final int[][] colors = { color1, color2, color3, color4, color5, color6, color7 };
-			createColorMap(colors, lengths_one);
+			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-		case RANDOM_COLORMAP_TWO: {
+		case COLORMAP_BLACK: {
+			List<byte[]> controlColors = new ArrayList<byte[]>();
+			controlColors.add(WHITE);
+			controlColors.add(BLACK);
 
-			final int[] colorStart = { 255, 255, 255 };
-			final int[] color2 = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] color3 = { 0, 0, 0 };
-			final int[] color4 = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] colorEnd = { 255, 255, 255 };
-
-			final int[][] colors = { colorStart, color2, color3, color4,
-					colorEnd };
-			createColorMap(colors, lengths);
+			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-		case RANDOM_COLORMAP_THREE: {
+		case COLORMAP_WHITE: {
+			List<byte[]> controlColors = new ArrayList<byte[]>();
+			controlColors.add(BLACK);
+			controlColors.add(WHITE);
 
-			final int[] colorStart = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] color2 = { 255, 255, 255 };
-			final int[] color3 = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[] color4 = { 0, 0, 0 };
-			final int[] colorEnd = { (int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255) };
-			final int[][] colors = { colorStart, color2, color3, color4,
-					colorEnd };
-			createColorMap(colors, lengths);
+			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+		}
+		break;
+		case COLORMAP_EARTH: {
+			List<byte[]> controlColors = new ArrayList<byte[]>();
+			controlColors.add(WHITE);
+			controlColors.add(DARK_BLUE);
+			controlColors.add(DARK_GREEN);
+			controlColors.add(BROWN);
+			controlColors.add(WHITE);
+			controlColors.add(DARK_BLUE);
+			controlColors.add(DARK_GREEN);
+			controlColors.add(BROWN);
+
+			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+		}
+		break;
+		case COLORMAP_RANDOM: {
+			List<byte[]> controlColors = new ArrayList<byte[]>();
+
+			int maxSpan = maxIterations/8;
+			byte[] color = createRandomColor(null, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+			color = createRandomColor(color, maxSpan);
+			controlColors.add(color);
+
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+//			controlColors.add(createRandomColor());
+
+			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+
 		}
 		break;
 		case RANDOM_COLORMAP_FOUR: {
@@ -166,7 +187,7 @@ public class ColorSet {
 					(int) (Math.random() * 255), (int) (Math.random() * 255) };
 			final int[][] colors = { colorStart, color2, color3, color4,
 					colorEnd };
-			createColorMap(colors, lengths);
+			//createLinearMap(colors, lengths);
 		}
 		break;
 		case RANDOM_COLORMAP_FIVE: {
@@ -177,7 +198,7 @@ public class ColorSet {
 			final int[] colorEnd = { 0, 0, 0 };
 			final int[][] colors = { colorStart, color2, color3, color4,
 					colorEnd };
-			createColorMap(colors, lengths);
+			//createLinearMap(colors, lengths);
 		}
 		break;
 		case RANDOM_COLORMAP_SIX: {
@@ -188,7 +209,7 @@ public class ColorSet {
 			final int[] colorEnd = { 255, 255, 255 };
 			final int[][] colors = { colorStart, color2, color3, color4,
 					colorEnd };
-			createColorMap(colors, lengths);
+			//createLinearMap(colors, lengths);
 		}
 		break;
 		case RANDOM_COLORMAP_SEVEN: {
@@ -199,58 +220,73 @@ public class ColorSet {
 			final int[] colorEnd = { 50, 50, 50 };
 			final int[][] colors = { colorStart, color2, color3, color4,
 					colorEnd };
-			createColorMap(colors, lengths);
+			//createLinearMap(colors, lengths);
 		}
 		break;
 
 		}
 	}
 
-	private void createColorMap(int[][] colors, int[] lengths) {
-		int start = 0;
-		for (int i = 0; i < colors.length - 1; ++i) {
-			final int startColor[] = colors[i];
-			final int endColor[] = colors[i + 1];
-			interpColors(startColor, endColor, start, start + lengths[i]);
-			start = start + lengths[i];
-		}
+	private void createLinearMap(final List<byte[]> controlColors, byte[][] colors, final int maxSpan) {
 
+		int start = 0;
+		for (int i = 0; i < controlColors.size() - 1; ++i) {
+			final byte startColor[] = controlColors.get(i);
+			final byte endColor[] = controlColors.get(i+1);
+			interpColors(startColor, endColor, start, start + maxSpan, colors);
+
+			start = start + maxSpan;
+		}
 	}
 
-	private void interpColors(int startColor[], int endColor[], int startIndex,
-			int endIndex) {
-		final int steps = endIndex - startIndex - 1;
-		final int red1 = startColor[0];
-		final int green1 = startColor[1];
-		final int blue1 = startColor[2];
+	private void createExponentialMap(final List<byte[]> controlColors, byte[][] colors, final int maxSpan) {
 
-		final int red2 = endColor[0];
-		final int green2 = endColor[1];
-		final int blue2 = endColor[2];
+		int accumulate = 0;
+		int start = 0;
+		int span = 2;
+		for (int i = 0; i < controlColors.size() - 1; ++i) {
+			final byte startColor[] = controlColors.get(i);
+			final byte endColor[] = controlColors.get(i+1);
+			if (i == controlColors.size() - 2 )
+				span = maxSpan - accumulate;
+			span %=256;
+			interpColors(startColor, endColor, start, start + span, colors);
+			start = start + span;
+			accumulate += span;
+			span *= 2;
 
-		final int stepR = (red2 - red1) / steps;
-		int strideR = 0;
-		final int stepG = (green2 - green1) / steps;
-		int strideG = 0;
-		final int stepB = (blue2 - blue1) / steps;
-		int strideB = 0;
+		}
+	}
+
+	private void interpColors(final byte startColor[], final byte endColor[], final int startIndex,
+							  final int endIndex, byte[][] colors) {
+		final int steps = (endIndex - startIndex - 1);
+		final int red1 = startColor[0] & 0xFF;
+		final int green1 = startColor[1] & 0xFF;;
+		final int blue1 = startColor[2] & 0xFF;
+
+		final int red2 = endColor[0] & 0xFF;
+		final int green2 = endColor[1] & 0xFF;
+		final int blue2 = endColor[2] & 0xFF;
+
+		byte stepR = (byte)((red2 - red1)/steps);
+		byte strideR = 0;
+		byte stepG = (byte)((green2 - green1)/steps);
+		byte strideG = 0;
+		byte stepB = (byte)((blue2 - blue1)/steps);
+		byte strideB = 0;
 		for (int i = startIndex; i < endIndex; ++i) {
-			this.colors_red[i] = (byte) (red1 + strideR);
+			colors[i][0] = (byte) (red1 + strideR);
 			strideR += stepR;
-			this.colors_green[i] = (byte) (green1 + strideG);
+			colors[i][1] = (byte) (green1 + strideG);
 			strideG += stepG;
-			this.colors_blue[i] = (byte) (blue1 + strideB);
+			colors[i][2] = (byte) (blue1 + strideB);
 			strideB += stepB;
 		}
+
+
 	}
 
-	// arrays for holding individual RGB components of color map
-	protected byte colors_red[];
-	protected byte colors_green[];
-	protected byte colors_blue[];
 
-	// the color set arrays have to have enough resolution to map each iteration value of the
-	// complex iterated fractal. We store a local copy of the fractal functions range of iteration values
-	protected int maxIterations;
 
 }

@@ -4,33 +4,37 @@ import java.awt.Point
 import java.awt.geom.Rectangle2D
 import java.awt.image.{BufferedImage, DataBufferByte, Raster}
 import java.nio.ByteBuffer
+import java.util
 import java.util.Base64
 import javax.imageio.ImageIO
 
 import com.fasterxml.jackson.databind.JsonNode
-import org.bsheehan.fractal.{Fractal, IFractal, IteratedFunctionFactory}
+import org.bsheehan.fractal.ColorSet.ColorSetType
+import org.bsheehan.fractal._
 import org.bsheehan.fractal.IteratedFunctionFactory.FractalType
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.{Json, JsPath, Writes, JsValue}
 import play.api.mvc.{Action, Controller}
 
-
-
 import play.api.libs.json._
+import services.FractalService
+import scala.collection.JavaConverters._
 
 // IMPORTANT import this to have the required tools in your scope
 import play.api.libs.json._
 // imports required functional generic structures
 import play.api.libs.functional.syntax._
 
-
-
-
 object Application extends Controller {
+
+  val colorSetType = ColorSetType.COLORMAP_RANDOM;
+  val randomColorSet:ColorSet = new ColorSet(0, colorSetType)
+
+  val fractalService = FractalService
+
   def index = Action {
     Ok(views.html.index("Fractalator"))
   }
-
 
   // JSON converter for Rectangle2D.Float
   implicit object Rectangle2DDoubleWrites extends Writes[Rectangle2D.Double] {
@@ -42,33 +46,33 @@ object Application extends Controller {
     )
   }
 
-
-
   def fractals = Action {
-    {
-      implicit request =>
+      implicit request => {
 
-        def createFractal(fractalType: IteratedFunctionFactory.FractalType): IFractal = {
-          val fractal: IFractal = new org.bsheehan.fractal.Fractal(IteratedFunctionFactory.createIteratedFunction(fractalType))
-          return fractal
-        }
+        val fractalInfos: util.List[FractalInfo] = fractalService.getFractals;
 
-        val fractal: IFractal = createFractal(FractalType.MANDELBROT)
+        var js = Json.obj()
+        fractalInfos.asScala.toList.foreach (node => {
+          val mandelbrot = models.Fractal(node.`type`.ordinal(), node.config.getFractalRegion)
+          js = Json.obj(
+            "id" -> mandelbrot.id,
+            "region" -> Json.toJson(mandelbrot.region)
+          )
 
-
-        val mandelbrot = models.Fractal(1,fractal.getFractalFunction.getFractalRegion)
-
-        val js = Json.obj(
-          "id" -> mandelbrot.id,
-          "region" -> Json.toJson(mandelbrot.region)
-        )
-
+        })
         Ok(js).as("application/json")
-
     }
+
   }
 
-  def fractal = Action {
+    def color = Action {
+      implicit request =>{
+        randomColorSet.setColorSet(colorSetType)
+        Ok("all good")
+      }
+    }
+
+    def fractal = Action {
     {
       implicit request =>
 
@@ -78,8 +82,6 @@ object Application extends Controller {
       }
 
       val json = request.body.asJson.get
-      //val offsetX = json \ "offsetX"
-      //val offsetY = json \ "offsetY"
       val region = json \ "region"
       val imageSize = json \ "size"
 
@@ -90,12 +92,12 @@ object Application extends Controller {
 
       val fractal: IFractal = createFractal(FractalType.MANDELBROT)
 
-     // fractal.getFractalFunction.setOffset(offsetX.as[Float], offsetY.as[Float])
-      fractal.getFractalFunction.setFractalRegion(rect)
+      fractal.getFractalFunction.getConfig.setFractalRegion(rect)
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
-      //fractal.setRandomColorSet()
       fractal.generate()
+      randomColorSet.setMaxIterations(fractal.getFractalFunction.getConfig.getMaxIterations)
+      fractal.setColorSet(randomColorSet)
       fractal.assignColors()
       val buffer: ByteBuffer = fractal.getBufferColors
       buffer.rewind()
@@ -119,9 +121,6 @@ object Application extends Controller {
       val encodedBytes: Array[Byte] = Base64.getEncoder.encode(bytes)
 
       Ok(encodedBytes)
-
-
     }
   }
-
 }

@@ -78,18 +78,18 @@
         });
     }
 
-    $('#ResetButton').click(function(){
+    $('.reset-button').click(function(){
         zoom = 1
         getFractals()
         createFractal(0,0)
     });
 
-    $('#ZoomOutButton').click(function(){
+    $('.zoom-out-button').click(function(){
        zoom = -1
        createFractal(0, 0);
     });
 
-    $('#ChangeColorButton').click(function(){
+    $('.color-button').click(function(){
        $.ajax({
             type: "PUT",
             url: "color",

@@ -5,6 +5,7 @@
 GET     /                           controllers.Application.index()
 POST    /fractal                    controllers.Application.fractal()
 GET     /fractals                   controllers.Application.fractals()
+PUT     /color                      controllers.Application.color()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

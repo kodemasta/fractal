@@ -22,7 +22,7 @@ public class Fractal implements IFractal {
 	private short[][] iterationBuffer;
 
 	// function that represents the mathematical fractal iteration function
-	private IIteratedFunction fractalIterationFunction;
+	private IIteratedFunction fractalFunction;
 
 	// color set used to map from iteration buffer values to pixelBuffer RGB  values
 	protected ColorSet rgbColorSet;
@@ -46,10 +46,10 @@ public class Fractal implements IFractal {
 	 * @param fractalFunction
 	 */
 	public Fractal(IIteratedFunction fractalFunction) {
-		this.fractalIterationFunction = fractalFunction;
-		final short maxIterations = this.fractalIterationFunction.getMaxIterations();
+		this.fractalFunction = fractalFunction;
+		final short maxIterations = this.fractalFunction.getConfig().getMaxIterations();
 		//this.iterationHistogram = new int[maxIterations];
-		this.rgbColorSet = new ColorSet(maxIterations);
+		//this.rgbColorSet = new ColorSet(maxIterations);
 	}
 
 	/** 
@@ -73,12 +73,13 @@ public class Fractal implements IFractal {
 	 */
 	public void assignColors() {
 		this.rgbBuffer.clear();
+		byte colorMap[][] = this.rgbColorSet.getColors();
 		for (int i = 0 ; i < this.screenWidth; i++){
 			for (int j = 0; j < this.screenHeight; j++) {
 				final int index = this.iterationBuffer[i][j];
-				this.rgbBuffer.put(this.rgbColorSet.getBlue(index));
-				this.rgbBuffer.put(this.rgbColorSet.getGreen(index));
-				this.rgbBuffer.put(this.rgbColorSet.getRed(index));
+				this.rgbBuffer.put(colorMap[index][2]);
+				this.rgbBuffer.put(colorMap[index][1]);
+				this.rgbBuffer.put(colorMap[index][0]);
 			}
 		}
 	}
@@ -92,28 +93,28 @@ public class Fractal implements IFractal {
 	}
 
 	private boolean generate(ByteBuffer buffer, int width, int height) {
-		final double kConvertPixelToRealAxis = (double)this.fractalIterationFunction.getFractalRegion().getWidth()
+		final double kConvertPixelToRealAxis = (double)this.fractalFunction.getConfig().getFractalRegion().getWidth()
 		/ width;
-		final double kConvertPixelToImagAxis = (double)this.fractalIterationFunction.getFractalRegion().getHeight()
+		final double kConvertPixelToImagAxis = (double)this.fractalFunction.getConfig().getFractalRegion().getHeight()
 		/ height;
 
-		final int maxIterations = this.fractalIterationFunction.getMaxIterations();
-		final Rectangle.Double fractalRegion = this.fractalIterationFunction.getFractalRegion();
+		final int maxIterations = this.fractalFunction.getConfig().getMaxIterations();
+		final Rectangle.Double fractalRegion = this.fractalFunction.getConfig().getFractalRegion();
 //		for (int i = 0; i < maxIterations; ++i)
 //			this.iterationHistogram[i] = 0;
 		// determine number of iterations for each fractal pixel on complex
 		// plane.
 		// outer loop iterates over imaginary axis of specified region
 		for (int pixelY = 0; pixelY < height; pixelY++) {
-			// convert pixel y coordinate to imaginary component of c, cy
+			// convert pixel y coordinate to imaginary component of zConstant, cy
 			c.i = kConvertPixelToImagAxis * pixelY
 			+ fractalRegion.getMinY(); //top
 			// inner loop iterates over real axis of specified region
 			for (int pixelX = 0; pixelX < width; pixelX++) {
-				// convert pixel x coordinate to real component of c, cx
+				// convert pixel x coordinate to real component of zConstant, cx
 				c.r = kConvertPixelToRealAxis * pixelX
 				+ fractalRegion.getMinX(); //left
-				final short numIterations = this.fractalIterationFunction.iterate(c);
+				final short numIterations = this.fractalFunction.iterate(c);
 //				this.iterationHistogram[numIterations]++;
 				this.iterationBuffer[pixelY][pixelX] = numIterations;
 			}
@@ -126,14 +127,8 @@ public class Fractal implements IFractal {
 		return true;
 	}
 
-
-
-	/**
-	 *  Create a RGB color palette to be used for mapping the iteration
-	 *  values to RGB pixel values.
-	 */
-	public void setRandomColorSet() {
-		//this.rgbColorSet.setRandomColorSet(this.iterationHistogram);
+	public void setColorSet(ColorSet colorSet) {
+		this.rgbColorSet = colorSet;
 	}
 
 	public ByteBuffer getBufferColors() {
@@ -150,13 +145,13 @@ public class Fractal implements IFractal {
 
 	@Override
 	public void setFractalFunction(IIteratedFunction fractalFunction) {
-		this.fractalIterationFunction = fractalFunction;
-		this.fractalIterationFunction.setScale(this.screenAspectRatio);
+		this.fractalFunction = fractalFunction;
+		this.fractalFunction.setScale(this.screenAspectRatio);
 	}
 
 	@Override
 	public IIteratedFunction getFractalFunction() {
-		return this.fractalIterationFunction;
+		return this.fractalFunction;
 	}
 
 	@Override
