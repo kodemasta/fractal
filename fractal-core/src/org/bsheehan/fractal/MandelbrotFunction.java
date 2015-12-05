@@ -24,9 +24,9 @@ public class MandelbrotFunction extends AbstractFractalFunction {
 	}
 
 	public void reset() {
-		double left = -2.5f;
+		double left = -2.25f;
 		double top = -1.75f;
-		double right = 1.0f;
+		double right = 1.25f;
 		double bottom = 1.75f;
 
 		this.fractalInfo.config.setFractalRegion(new Rectangle.Double(left, top, right-left, bottom-top));

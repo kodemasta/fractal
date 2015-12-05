@@ -1,43 +1,78 @@
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
-<html>
-<head>
-    <title>@title</title>
-    <link rel='shortcut icon' type='image/png' href='@routes.Assets.at("images/favicon.png")'>
-    <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))'>
-    <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
-    <script src='@routes.Assets.at("fractal.js")'></script>
-    <style>
-        body {
-        margin-top: 50px;
-        }
-    </style>
+<html lang="en">
+    <head>
+        <title>@title</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))'>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src='@routes.Assets.at("fractal.js")'></script>
+    </head>
 
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">Fractalator</a>
+                    </div>
+                  <!--  <div>
+                        <ul class="nav navbar-nav">
+                            <li id=""><a href="#"> </a></li>
+                            <li id="reset"><a href="#">Reset</a></li>
+                            <li id="zoom-out"><a href="#">Zoom Out</a></li>
+                            <li id="color-change" class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Color<span class="caret"></span></a>
+                                <ul id="color-change-menu" class="dropdown-menu"></ul>
+                            </li>
+                        </ul>
+                    </div> -->
+                </div>
+            </nav>
 
-</head>
-<body>
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <a id="titleLink" class="brand" href="/">Fractalator</a>
-            <button  type="button"  class="reset-button btn btn-default navbar-btn">Reset</button>
-            <button  type="button"  class="zoom-out-button btn btn-default navbar-btn">Zoom Out</button>
-            <button  type="button"  class="color-button btn btn-default navbar-btn">Change Color</button>
+            <div class="well">
+                <div class="panel panel-default" >
+                    <div class="col-xs-12" style="height:10px;"></div>
+                    <div class="row">
+                        <div class="col-xs-1" style="height:10px;"></div>
+                        <div class="col-sm-7 col-xs-7 col-md-7 col-lg-7">
+                            <div>
+                                <IMG SRC="" ALT="where's da fractal ?" id="MyFractal" WIDTH=600 HEIGHT=600  class="img-rounded">
+                            </div>
+                            <div class="col-xs-1" style="height:10px;"></div>
+                        </div>
+                        <div class="col-sm-3 col-xs-3 col-md-3 col-lg-3">
+                            <div class="panel panel-default" >
+                                <div class="panel-heading">Zoom (click image to center)</div>
+                                <div class="panel-body">
+                                    <center>
+                                    <div class="btn-group-vertical" role="group" aria-label="...">
+                                        <button id="zoom-in-button" type="button" class="btn btn-default">+</button>
+                                        <button id="zoom-out-button" type="button" class="btn btn-default">-</button>
+                                        <button id="reset-button" type="button" class="btn btn-default">Reset</button>
+                                    </div>
+                                    </center>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default" >
+                                <div class="panel-heading">Colors</div>
+                                <div class="panel-body">
+                                    <center>
+                                        <div id="color-buttons" class="btn-group-vertical" role="group" aria-label="...">
+                                        </div>
+                                    </center>
+                                 </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-     </div>
-</div>
-<div class="container">
-
-    <div class="well">
-
-        <center>
-            <h4>Go ahead and click several times on the fractal to zoom in !</h4>
-            <p></p>
-            <IMG SRC="" ALT="fractal" id="MyFractal" WIDTH=600 HEIGHT=600>
-        </center>
-    </div>
-</div>
-
-</body>
+    </body>
 </html>

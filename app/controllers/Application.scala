@@ -8,22 +8,20 @@ import java.util
 import java.util.Base64
 import javax.imageio.ImageIO
 
-import com.fasterxml.jackson.databind.JsonNode
 import org.bsheehan.fractal.ColorSet.ColorSetType
-import org.bsheehan.fractal._
 import org.bsheehan.fractal.IteratedFunctionFactory.FractalType
+import org.bsheehan.fractal._
 import play.api.libs.Files.TemporaryFile
-import play.api.libs.json.{Json, JsPath, Writes, JsValue}
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, Controller}
-
-import play.api.libs.json._
 import services.FractalService
+
 import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 // IMPORTANT import this to have the required tools in your scope
 import play.api.libs.json._
 // imports required functional generic structures
-import play.api.libs.functional.syntax._
 
 object Application extends Controller {
 
@@ -58,16 +56,41 @@ object Application extends Controller {
             "id" -> mandelbrot.id,
             "region" -> Json.toJson(mandelbrot.region)
           )
-
         })
         Ok(js).as("application/json")
     }
+  }
 
+  def colors = Action {
+    implicit request => {
+
+      val colorInfos: util.List[ColorInfo] = fractalService.getColors;
+
+      val colorInfoMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
+      colorInfos.asScala.toList.foreach (node => {
+        val color = models.ColorInfo(node.`type`.toString, node.name, node.description)
+
+        val colorInfoMap: Map[String, String] = Map(
+          "id" -> color.id,
+          "name" -> color.name,
+          "description" -> color.description
+        )
+        colorInfoMapList.+=:(Json.toJson(colorInfoMap))
+      })
+
+      val colorInfoMapListMap: Map[String, ListBuffer[JsValue]] =  Map("colors" -> colorInfoMapList)
+      Ok(Json.toJson(colorInfoMapListMap)).as("application/json")
+    }
   }
 
     def color = Action {
       implicit request =>{
-        randomColorSet.setColorSet(colorSetType)
+        val json = request.body.asJson.get
+        val id: JsValue = json \ "id"
+
+        val color: ColorSetType = ColorSetType.values()(id.as[String].toInt)
+
+        randomColorSet.setColorSet(color)
         Ok("all good")
       }
     }
