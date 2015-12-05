@@ -13,7 +13,7 @@
     </head>
 
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -35,23 +35,22 @@
 
             <div class="well">
                 <div class="panel panel-default" >
-                    <div class="col-lg-12" style="height:10px;"></div>
+                    <div class="col-lg-6" style="height:10px;"></div> <!--top margin -->
                     <div class="row">
-                        <div class="col-lg-1" style="height:10px;"></div>
-                        <div class="col-lg-7">
+
+                        <div class="col-sm-9 col-md-9 col-lg-9">
                             <div>
-                                <IMG SRC="" ALT="where's da fractal ?" id="MyFractal" WIDTH=600 HEIGHT=600  class="img-rounded">
+                                <IMG SRC="" ALT="where's da fractal ?" id="MyFractal" WIDTH=600 HEIGHT=600  class="img-rounded" style="cursor:crosshair">
                             </div>
-                            <div class="col-xs-1" style="height:10px;"></div>
                         </div>
-                        <div class="col-md-2 col-lg-3">
+                        <div class="col-sm-3 col-md-3 col-lg-3">
                             <div class="panel panel-default" >
-                                <div class="panel-heading">Zoom (click image to center)</div>
+                                <div class="panel-heading">Zoom (click image)</div>
                                 <div class="panel-body">
                                     <center>
                                     <div class="btn-group-vertical" role="group" aria-label="...">
-                                        <button id="zoom-in-button" type="button" class="btn btn-default">+</button>
-                                        <button id="zoom-out-button" type="button" class="btn btn-default">-</button>
+                                        <button id="zoom-in-button" type="button" class="btn btn-default" style="font-size:18px;">+</button>
+                                        <button id="zoom-out-button" type="button" class="btn btn-default" style="font-size:18px;">-</button>
                                         <button id="reset-button" type="button" class="btn btn-default">Reset</button>
                                     </div>
                                     </center>
@@ -71,7 +70,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </body>
