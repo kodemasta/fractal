@@ -14,6 +14,19 @@ import java.util.List;
  * 
  **/
 public class ColorSet {
+	final byte[] WHITE = {(byte)255, (byte)255, (byte)255};
+	final byte[] BLACK = {0, 0, 0};
+	final byte[] BLUE = {0, 0, (byte)255};
+	final byte[] RED = {(byte)255, 0, 0};
+	final byte[] GREEN = {0, (byte)255, 0};
+	final byte[] CYAN = {0, (byte)255, (byte)255};
+	final byte[] MAGENTA = {(byte)255, 0, (byte)255};
+	final byte[] YELLOW = {(byte)255, (byte)255, 0};
+	final byte[] BROWN = {(byte)150, (byte)100, (byte)50};
+	final byte[] DARK_GREEN = {(byte)50, (byte)150, (byte)50};
+	final byte[] DARK_BLUE = {(byte)0, (byte)50, (byte)150};
+	final byte[] ORANGE = {(byte)255, (byte)165, (byte)0};
+	final byte[] PURPLE = {(byte)160, (byte)32, (byte)240};
 
 	// arrays for holding individual RGB components of color map
 	protected byte colors_rgb[][];
@@ -26,19 +39,19 @@ public class ColorSet {
 
 	/** enum for different color mapping alogrithms **/
 	public enum ColorSetType {
-		COLORMAP_GRAY,
+		COLORMAP_SUNSET,
 		COLORMAP_EARTH,
-		COLORMAP_RANDOM,
-		COLORMAP_BLACK_WHITE
+		COLORMAP_GRAY,
+		COLORMAP_BINARY
 	}
 
 	public static List<ColorInfo> getColorInfos(){
 		List<ColorInfo> colors = new ArrayList<ColorInfo>();
 
-		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY.ordinal(), "Gray", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_SUNSET.ordinal(), "Sunset", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_EARTH.ordinal(), "Earth", "todo"));
-		colors.add(new ColorInfo(ColorSetType.COLORMAP_RANDOM.ordinal(), "Random", "todo"));
-		colors.add(new ColorInfo(ColorSetType.COLORMAP_BLACK_WHITE.ordinal(), "Black & White", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY.ordinal(), "Gray", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_BINARY.ordinal(), "Binary", "todo"));
 
 		return colors;
 	}
@@ -89,17 +102,6 @@ public class ColorSet {
 	 */
 	public void setColorSet(ColorSetType colorSetType) {
 
-		final byte[] WHITE = {(byte)255, (byte)255, (byte)255};
-		final byte[] BLACK = {0, 0, 0};
-		final byte[] BLUE = {0, 0, (byte)255};
-		final byte[] RED = {(byte)255, 0, 0};
-		final byte[] GREEN = {0, (byte)255, 0};
-		final byte[] CYAN = {0, (byte)255, (byte)255};
-		final byte[] MAGENTA = {(byte)255, 0, (byte)255};
-		final byte[] YELLOW = {(byte)255, (byte)255, 0};
-		final byte[] BROWN = {(byte)150, (byte)100, (byte)50};
-		final byte[] DARK_GREEN = {(byte)50, (byte)150, (byte)50};
-		final byte[] DARK_BLUE = {(byte)0, (byte)50, (byte)150};
 
 		switch (colorSetType) {
 			//black random white random, black
@@ -127,7 +129,7 @@ public class ColorSet {
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-		case COLORMAP_BLACK_WHITE: {
+		case COLORMAP_BINARY: {
 			for (int i = 0; i < maxIterations; ++i) {
 				if (i%2==0) {
 					colors_rgb[i][0] = (byte) (0xFF);
@@ -162,52 +164,75 @@ public class ColorSet {
 			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
 
-
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-		case COLORMAP_RANDOM: {
+		case COLORMAP_SUNSET: {
 			List<byte[]> controlColors = new ArrayList<byte[]>();
-
-			int maxSpan = 256;
-
 			// first 7 ramps contribute total 254 exponential levels of color
-			byte[] color = createRandomColor(null, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
+			controlColors.add(WHITE);
+			controlColors.add(YELLOW);
+			controlColors.add(ORANGE);
+			controlColors.add(RED);
+			controlColors.add(CYAN);
+			controlColors.add(BLUE);
+			controlColors.add(PURPLE);
 
 			// following 8 ramps each contribute 256 linear levels each to color map
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
-			color = createRandomColor(color, maxSpan);
-			controlColors.add(color);
+			controlColors.add(WHITE);
+			controlColors.add(YELLOW);
+			controlColors.add(ORANGE);
+			controlColors.add(RED);
+			controlColors.add(CYAN);
+			controlColors.add(BLUE);
+			controlColors.add(PURPLE);
+			controlColors.add(DARK_BLUE);
 
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
+//		case COLORMAP_RANDOM: {
+//			List<byte[]> controlColors = new ArrayList<byte[]>();
+//
+//			int maxSpan = 256;
+//
+//			// first 7 ramps contribute total 254 exponential levels of color
+//			byte[] color = createRandomColor(null, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//
+//			// following 8 ramps each contribute 256 linear levels each to color map
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//			color = createRandomColor(color, maxSpan);
+//			controlColors.add(color);
+//
+//			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+//		}
+//		break;
 
 		}
 	}
@@ -225,8 +250,6 @@ public class ColorSet {
 	}
 
 	private void createExponentialMap(final List<byte[]> controlColors, byte[][] colors, final int maxSpan) {
-
-
 		int start = 0;
 		int span = 2; //exponential start
 		for (int i = 0; i < controlColors.size() - 1; ++i) {
@@ -249,10 +272,7 @@ public class ColorSet {
 			start = start + span;
 			span *= 2;
 		}
-		
 	}
-
-
 
 	private void interpColors(final byte startColor[], final byte endColor[], final int startIndex,
 							  final int endIndex, byte[][] colors) {

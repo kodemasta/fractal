@@ -17,6 +17,7 @@ import play.api.mvc.{Action, Controller}
 import services.FractalService
 
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 // IMPORTANT import this to have the required tools in your scope
@@ -25,8 +26,11 @@ import play.api.libs.json._
 
 object Application extends Controller {
 
-  val colorSetType = ColorSetType.COLORMAP_RANDOM;
-  val randomColorSet:ColorSet = new ColorSet(0, colorSetType)
+  val colorSetMap:mutable.Map[ColorSetType,ColorSet] = new mutable.HashMap[ColorSetType,ColorSet];
+  colorSetMap.put(ColorSetType.COLORMAP_EARTH, new ColorSet(2048, ColorSetType.COLORMAP_EARTH))
+  colorSetMap.put(ColorSetType.COLORMAP_SUNSET, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET))
+  colorSetMap.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
+  colorSetMap.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
 
   val fractalService = FractalService
 
@@ -90,7 +94,7 @@ object Application extends Controller {
 
         val color: ColorSetType = ColorSetType.values()(id.as[String].toInt)
 
-        randomColorSet.setColorSet(color)
+        //noop for now TODO cleanup
         Ok("all good")
       }
     }
@@ -107,11 +111,13 @@ object Application extends Controller {
       val json = request.body.asJson.get
       val region = json \ "region"
       val imageSize = json \ "size"
+      val id: JsValue = json \ "id"
+      val colorSetId: ColorSetType = ColorSetType.values()(id.as[String].toInt)
 
       val rect = new Rectangle2D.Double((region \ "x").as[Double],
-        (region \ "y").as[Double],
-        (region \ "w").as[Double],
-        (region \ "h").as[Double])
+      (region \ "y").as[Double],
+      (region \ "w").as[Double],
+      (region \ "h").as[Double])
 
       val fractal: IFractal = createFractal(FractalType.MANDELBROT)
 
@@ -119,8 +125,7 @@ object Application extends Controller {
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
       fractal.generate()
-      randomColorSet.setMaxIterations(fractal.getFractalFunction.getConfig.getMaxIterations)
-      fractal.setColorSet(randomColorSet)
+      fractal.setColorSet(colorSetMap.get(colorSetId).get)
       fractal.assignColors()
       val buffer: ByteBuffer = fractal.getBufferColors
       buffer.rewind()

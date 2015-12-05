@@ -10,6 +10,7 @@
       }
       var colorMaps
       var zoom = 1;
+      var colorSetId = "2";
 
       getFractals();
       getColors();
@@ -17,29 +18,6 @@
 
       for (var i = 0; i < colorMaps.colors.length; i++) {
           $('#color-change-menu').append('<li value="' + colorMaps.colors[i].id  + '"><a href="#">' + colorMaps.colors[i].name + '</a></li>');
-      }
-
-      function changeColors(colorId) {
-
-          console.log("changeColors "+ colorId);
-
-         $.ajax({
-              type: "PUT",
-              url: "color",
-              async: false,
-              data: JSON.stringify({"id": colorId}),
-              contentType: 'application/json',
-              dataType: "text",
-              success: function(data) {
-                  console.log("changed color " + data);
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                  console.log("error " + textStatus + " " + errorThrown);
-                  console.log("incoming Text " + jqXHR.responseText);
-              }
-          });
-          zoom = 0
-          createFractal(0, 0);
       }
 
 
@@ -84,7 +62,8 @@
               url: "fractal",
               async: false,
               data: JSON.stringify({
-                  region: fractalRegion,
+                  "id": colorSetId,
+                  "region": fractalRegion,
                   "size": {
                       "w": width,
                       "h": height
@@ -165,18 +144,16 @@
          createFractal(0, 0);
       });
 
-
-
       function clickColor() {
           console.log("clickColor ");
           var $this = $(this);
-          var selKeyVal = $this.attr("value");
-          console.log("selKeyVal " + selKeyVal);
+          colorSetId = $this.attr("value");
+          console.log("selKeyVal " + colorSetId);
          $.ajax({
               type: "PUT",
               url: "color",
               async: false,
-              data: JSON.stringify({"id": selKeyVal}),
+              data: JSON.stringify({"id": colorSetId}),
               contentType: 'application/json',
               dataType: "text",
               success: function(data) {

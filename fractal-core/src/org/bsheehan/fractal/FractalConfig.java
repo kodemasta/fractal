@@ -19,7 +19,7 @@ public class FractalConfig {
 	 * converge or diverge at a particular rate based on the initial location and iterative
 	 * function in the complex plane. The 'velocity' of the iteration escape is the metric used to
 	 * map an RGB color for function display **/
-	protected double escapeRadius = 4.0;
+	protected double escapeRadius = 32.0;
 
 	/** This is a maximum limit on number of iterations if escape radius not met. This is a critical
 	 * parameter and directly maps to the runtime memory footprint of the application. Larger values
