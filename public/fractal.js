@@ -9,7 +9,8 @@
           }
       }
       var colorMaps
-      var zoom = 1;
+      var zoomMode = 0;
+      var zoomLevel = 0;
       var colorSetId = "2";
 
       getFractals();
@@ -23,7 +24,7 @@
 
       function createFractal(offsetX, offsetY) {
           console.log("create offset " + offsetX + " " + offsetY);
-          var img = document.getElementById('MyFractal');
+          var img = document.getElementById('fractal-image');
           var width = img.naturalWidth;
           if (width == 0)
               width = 600;
@@ -42,12 +43,12 @@
           fractalRegion.x += fractalOffsetX
           fractalRegion.y += fractalOffsetY
 
-          if (zoom > 1) {
+          if (zoomMode > 0) {
               fractalRegion.w /= 2
               fractalRegion.h /= 2
               fractalRegion.x += fractalRegion.w / 2
               fractalRegion.y += fractalRegion.h / 2
-          } else if (zoom < 0) {
+          } else if (zoomMode < 0) {
               fractalRegion.x -= fractalRegion.w / 2
               fractalRegion.y -= fractalRegion.h / 2
               fractalRegion.w *= 2
@@ -56,8 +57,7 @@
           console.log("create updated region " + JSON.stringify(fractalRegion));
           console.log("scaled region " + fractalRegion.x + " " + fractalRegion.y + " to " + (fractalRegion.x + fractalRegion.w) + " " + (fractalRegion.y + fractalRegion.h));
 
-          zoom = 2
-          $.ajax({
+           $.ajax({
               type: "POST",
               url: "fractal",
               async: false,
@@ -72,7 +72,7 @@
               contentType: 'application/json',
               dataType: "text",
               success: function(data) {
-                  $("#MyFractal").attr("src", 'data:image/jpg;base64,' + data)
+                  $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data)
               },
               error: function(jqXHR, textStatus, errorThrown) {
                   console.log("error " + textStatus + " " + errorThrown);
@@ -117,30 +117,25 @@
           });
       }
 
-      $('#reset').click(function() {
-          zoom = 1;
-          getFractals();
-          createFractal(0, 0)
-      });
-
       $('#reset-button').click(function() {
-         zoom = 1;
-         getFractals();
+         zoomMode = 0;
+         zoomLevel = 0;
+         $('#zoom-badge').html(zoomLevel)
+        getFractals();
          createFractal(0, 0)
       });
 
-      $('#zoom-out').click(function() {
-          zoom = -1
-          createFractal(0, 0);
-      });
-
       $('#zoom-out-button').click(function() {
-         zoom = -1
+         zoomLevel -= 1;
+         $('#zoom-badge').html(zoomLevel)
+         zoomMode = -1
          createFractal(0, 0);
       });
 
       $('#zoom-in-button').click(function() {
-         zoom = 2
+         zoomLevel += 1;
+         $('#zoom-badge').html(zoomLevel)
+         zoomMode = 1
          createFractal(0, 0);
       });
 
@@ -164,19 +159,22 @@
                   console.log("incoming Text " + jqXHR.responseText);
               }
           });
-          zoom = 0
+          zoomMode = 0
           createFractal(0, 0);
       }
 
       $('#color-change-menu li').click(clickColor);
 
-      $('#MyFractal').click(function(e) {
-          var img = document.getElementById('MyFractal');
+      $('#fractal-image').click(function(e) {
+          var img = document.getElementById('fractal-image');
           var width = img.naturalWidth;
           var height = img.naturalHeight;
           var offsetX = e.pageX - e.target.offsetLeft - e.target.offsetParent.offsetLeft - width / 2;
           var offsetY = e.pageY - e.target.offsetTop- e.target.offsetParent.offsetTop - height / 2;
 
+          zoomMode = 1;
+          zoomLevel += 1;
+          $('#zoom-badge').html(zoomLevel)
           createFractal(offsetX, offsetY);
       });
 
