@@ -31,7 +31,8 @@ public class Fractal implements IFractal {
 
 	// this is used by algorithms to determine if a particular fractal region
 	// has interesting visual heuristics
-	//protected int iterationHistogram[];
+	protected int iterationHistogram[];
+	protected int iterationHistogramTotal = 0;
 
 	// width and height of fractal in screen space
 	private int screenWidth, screenHeight;
@@ -47,9 +48,7 @@ public class Fractal implements IFractal {
 	 */
 	public Fractal(IIteratedFunction fractalFunction) {
 		this.fractalFunction = fractalFunction;
-		final short maxIterations = this.fractalFunction.getConfig().getMaxIterations();
-		//this.iterationHistogram = new int[maxIterations];
-		//this.rgbColorSet = new ColorSet(maxIterations);
+		this.iterationHistogram = new int[this.fractalFunction.getConfig().getMaxIterations()];
 	}
 
 	/** 
@@ -72,11 +71,23 @@ public class Fractal implements IFractal {
 	 *  Based on 3 byte GBR format
 	 */
 	public void assignColors() {
+
+
 		this.rgbBuffer.clear();
 		byte colorMap[][] = this.rgbColorSet.getColors();
 		for (int i = 0 ; i < this.screenWidth; i++){
 			for (int j = 0; j < this.screenHeight; j++) {
-				final int index = this.iterationBuffer[i][j];
+
+// histogram normalization method
+//				float hue = 0.0f;
+//				for (int k = 0; k < this.iterationBuffer[i][j]; k++)
+//				{
+//					hue += iterationHistogram[k] / (float)iterationHistogramTotal; // Must be floating-point division.
+//				}
+//				final int index = (int)(hue*(float)this.fractalFunction.getConfig().getMaxIterations());
+
+				// basic color setting
+				int index = this.iterationBuffer[i][j];
 				this.rgbBuffer.put(colorMap[index][2]);
 				this.rgbBuffer.put(colorMap[index][1]);
 				this.rgbBuffer.put(colorMap[index][0]);
@@ -100,25 +111,52 @@ public class Fractal implements IFractal {
 
 		final int maxIterations = this.fractalFunction.getConfig().getMaxIterations();
 		final Rectangle.Double fractalRegion = this.fractalFunction.getConfig().getFractalRegion();
-//		for (int i = 0; i < maxIterations; ++i)
-//			this.iterationHistogram[i] = 0;
+		double minY = fractalRegion.getMinY();
+		double minX = fractalRegion.getMinX();
+		//iterationHistogramTotal = 0;
+		//for (int i = 0; i < maxIterations; ++i)
+		//	this.iterationHistogram[i] = 0;
 		// determine number of iterations for each fractal pixel on complex
 		// plane.
 		// outer loop iterates over imaginary axis of specified region
+
+		//this.fractalFunction.getConfig().zConstant.setValues(-0.4,0.6);
+		Complex c = new Complex(this.fractalFunction.getConfig().zConstant);
+		Complex z = new Complex(this.fractalFunction.getConfig().zOrigin);
+
+		// mandelbrot iteration
 		for (int pixelY = 0; pixelY < height; pixelY++) {
 			// convert pixel y coordinate to imaginary component of zConstant, cy
-			c.i = kConvertPixelToImagAxis * pixelY
-			+ fractalRegion.getMinY(); //top
+			c.i = kConvertPixelToImagAxis * pixelY + minY; //top
 			// inner loop iterates over real axis of specified region
 			for (int pixelX = 0; pixelX < width; pixelX++) {
 				// convert pixel x coordinate to real component of zConstant, cx
-				c.r = kConvertPixelToRealAxis * pixelX
-				+ fractalRegion.getMinX(); //left
-				final short numIterations = this.fractalFunction.iterate(c);
-//				this.iterationHistogram[numIterations]++;
-				this.iterationBuffer[pixelY][pixelX] = numIterations;
+				c.r = kConvertPixelToRealAxis * pixelX + minX; //left
+				z.setValues(this.fractalFunction.getConfig().zOrigin);
+				this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z,c);
+
+				//this.iterationHistogram[numIterations]++;
+				//iterationHistogramTotal++;
+
 			}
 		}
+
+//		// julia iteration
+//		for (int pixelY = 0; pixelY < height; pixelY++) {
+//			// convert pixel y coordinate to imaginary component of zConstant, cy
+//			z.i = kConvertPixelToImagAxis * pixelY + minY; //top
+//			// inner loop iterates over real axis of specified region
+//			for (int pixelX = 0; pixelX < width; pixelX++) {
+//				// convert pixel x coordinate to real component of zConstant, cx
+//				z.r = kConvertPixelToRealAxis * pixelX + minX; //left
+//				c.setValues(this.fractalFunction.getConfig().zConstant);
+//				this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z,c);
+//
+//				//this.iterationHistogram[numIterations]++;
+//				//iterationHistogramTotal++;
+//
+//			}
+//		}
 
 //		for (int i = 0; i < maxIterations; ++i)
 //			if (this.iterationHistogram[i] > 0)

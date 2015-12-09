@@ -35,10 +35,9 @@ public abstract class AbstractFractalFunction implements IIteratedFunction {
 	 * @return
 	 */
 	protected boolean isPointInCardioidBulbs(Complex z) {
-		final double r = z.getReal();
-		final double i = z.getImaginary();
-		final double term1 = r-.25;
-		final double term2 = i*i;
+
+		final double term1 = z.r -.25;
+		final double term2 = z.i*z.i;
 		final double q = term1*term1 + term2;
 		return q*(q+term1) < .25*term2;
 	}

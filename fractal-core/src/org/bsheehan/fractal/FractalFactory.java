@@ -18,8 +18,8 @@ public class FractalFactory {
 
 	static public List<FractalInfo> getFractals() {
 		List<FractalInfo> fractals = new ArrayList<FractalInfo>();
-		MandelbrotFunction function = new MandelbrotFunction();
-		fractals.add(function.fractalInfo);
+		fractals.add(new MandelbrotFunction().fractalInfo);
+		fractals.add(new MandelbrotCubicFunction().fractalInfo);
 		return fractals;
 	}
 

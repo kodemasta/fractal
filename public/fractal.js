@@ -1,14 +1,7 @@
   $(document).ready(function() {
-      var fractalData = '{"id":1,"region":{"x":0,"y":0,"w":0,"h":0}}';
-      var fractalRegion = {
-          "region": {
-              "x": 0,
-              "y": 0,
-              "w": 0,
-              "h": 0
-          }
-      }
-      var colorMaps
+      var fractalData;
+      var fractalRegion;
+      var colorMaps;
       var zoomMode = 0;
       var zoomLevel = 0;
       var colorSetId = "2";
@@ -16,13 +9,19 @@
       getFractals();
       getColors();
       createFractal(0, 0)
+      createJuliaNavFractal(0,0);
 
-      for (var i = 0; i < colorMaps.colors.length; i++) {
-          $('#color-change-menu').append('<li value="' + colorMaps.colors[i].id  + '"><a href="#">' + colorMaps.colors[i].name + '</a></li>');
+      for (var i = 0; i < fractalData.fractals.length; i++) {
+           console.log("fractal-change-menu append " + fractalData.fractals[i].id + " " + fractalData.fractals[i].name);
+          $('#fractal-change-menu').append('<li value="' + fractalData.fractals[i].id  + '"><a href="#">' + fractalData.fractals[i].name + '</a></li>');
       }
 
+      $('#julia-picker').hide();
 
       function createFractal(offsetX, offsetY) {
+          $('#fractal-loading').show();
+          $("#fractal-image").attr("style", 'border: 1px solid #00dd00; cursor:crosshair');
+
           console.log("create offset " + offsetX + " " + offsetY);
           var img = document.getElementById('fractal-image');
           var width = img.naturalWidth;
@@ -62,7 +61,8 @@
               url: "fractal",
               async: false,
               data: JSON.stringify({
-                  "id": colorSetId,
+                  "id":selectedFractal.id,
+                  "colorId": colorSetId,
                   "region": fractalRegion,
                   "size": {
                       "w": width,
@@ -72,7 +72,47 @@
               contentType: 'application/json',
               dataType: "text",
               success: function(data) {
-                  $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data)
+                  $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data);
+                  $('#fractal-loading').hide();
+                  $("#fractal-image").attr("style", 'cursor:crosshair');
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                  console.log("error " + textStatus + " " + errorThrown);
+                  console.log("incoming Text " + jqXHR.responseText);
+                  $('#fractal-loading').hide();
+                  $("#fractal-image").attr("style", 'cursor:crosshair');
+
+              }
+          });
+      }
+
+      function createJuliaNavFractal(offsetX, offsetY) {
+          console.log("create offset " + offsetX + " " + offsetY);
+          var img = document.getElementById('fractal-image2');
+          var width = img.naturalWidth;
+          if (width == 0)
+              width = 200;
+          var height = img.naturalHeight;
+          if (height == 0)
+              height = 200;
+
+           $.ajax({
+              type: "POST",
+              url: "fractal",
+              async: false,
+              data: JSON.stringify({
+                  "id":selectedFractal.id,
+                  "colorId": colorSetId,
+                  "region":  JSON.parse(selectedFractal.region),
+                  "size": {
+                      "w": width,
+                      "h": height
+                  }
+              }),
+              contentType: 'application/json',
+              dataType: "text",
+              success: function(data) {
+                  $("#fractal-image2").attr("src", 'data:image/jpg;base64,' + data)
               },
               error: function(jqXHR, textStatus, errorThrown) {
                   console.log("error " + textStatus + " " + errorThrown);
@@ -81,6 +121,16 @@
           });
       }
 
+      function setFractal(fractalId) {
+
+       for (var i = 0; i < fractalData.fractals.length; i++) {
+        if (fractalData.fractals[i].id == fractalId) {
+         $('#fractal-name').html('<a href="#"><span class="label label-primary">'+fractalData.fractals[i].name+'</span></a>')
+            selectedFractal = fractalData.fractals[i]
+            fractalRegion = JSON.parse(fractalData.fractals[i].region);
+         }
+        }
+      }
 
       function getFractals() {
           $.ajax({
@@ -90,8 +140,8 @@
               dataType: "json",
               success: function(data) {
                   console.log("GET fractals " + JSON.stringify(data));
-                  fractalData = JSON.stringify(data)
-                  fractalRegion = data.region
+                  fractalData = data
+                  setFractal(0)
               },
               error: function(jqXHR, textStatus, errorThrown) {
                   console.log("GET fractals error " + textStatus + " " + errorThrown);
@@ -120,15 +170,15 @@
       $('#reset-button').click(function() {
          zoomMode = 0;
          zoomLevel = 0;
-         $('#zoom-badge').html(zoomLevel)
-        getFractals();
-         createFractal(0, 0)
+         $('#zoom-badge').html(zoomLevel);
+         setFractal(selectedFractal.id);
+         createFractal(0, 0);
       });
 
       $('#zoom-out-button').click(function() {
          zoomLevel -= 1;
-         $('#zoom-badge').html(zoomLevel)
-         zoomMode = -1
+         $('#zoom-badge').html(zoomLevel);
+         zoomMode = -1;
          createFractal(0, 0);
       });
 
@@ -163,7 +213,23 @@
           createFractal(0, 0);
       }
 
-      $('#color-change-menu li').click(clickColor);
+        function clickFractal() {
+            console.log("clickFractal");
+            var $this = $(this);
+            fractalId = $this.attr("value");
+            console.log("selKeyVal " + fractalId);
+
+            setFractal(fractalId)
+
+            zoomMode = 0
+            zoomLevel = 0;
+            $('#zoom-badge').html(zoomLevel)
+            createFractal(0, 0);
+        }
+
+
+      $('#fractal-change-menu li').click(clickFractal);
+
 
       $('#fractal-image').click(function(e) {
           var img = document.getElementById('fractal-image');

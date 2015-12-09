@@ -16,35 +16,44 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Fractalator</a>
+                <a class="navbar-brand" href="#">Fractal Scope</a>
             </div>
-            <!--  <div>
+            <div>
                   <ul class="nav navbar-nav">
                       <li id=""><a href="#"> </a></li>
-                      <li id="reset"><a href="#">Reset</a></li>
-                      <li id="zoom-out"><a href="#">Zoom Out</a></li>
-                      <li id="color-change" class="dropdown">
-                          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Color<span class="caret"></span></a>
-                          <ul id="color-change-menu" class="dropdown-menu"></ul>
+                      <li id="fractal-change" class="dropdown">
+                          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Select <span class="caret"></span></a>
+                          <ul id="fractal-change-menu" class="dropdown-menu"></ul>
                       </li>
+                      <li id="fractal-name"><a href="#"><span class="label label-info">Name</span></a></li>
+                      <li id="fractal-loading"><a href="#"><span class="label label-success">Computing</span></a></li>
                   </ul>
-              </div> -->
+            </div>
         </div>
     </nav>
 
     <div class="container">
-
-            <div class="well">
                 <div class="panel panel-default" >
                     <div class="col-lg-6" style="height:10px;"></div> <!--top margin -->
                     <div class="row">
 
                         <div class="col-sm-8 col-md-8 col-lg-8">
                             <div>
-                                <IMG SRC="" ALT="where's da fractal bro?" id="fractal-image" WIDTH=600 HEIGHT=600  class="img-rounded" style="cursor:crosshair">
+                                <IMG SRC="" ALT=" loading... " id="fractal-image" WIDTH=600 HEIGHT=600 class="img-circle" style="cursor:crosshair">
                             </div>
                         </div>
                         <div class="col-sm-3 col-md-3 col-lg-3">
+                            <div id="julia-picker" class="panel panel-default" >
+                                <div class="panel-heading">Julia Picker (click image)</div>
+                                <div class="panel-body">
+                                    <center>
+                                        <div>
+                                            <IMG SRC="" ALT="loading..." id="fractal-image2" WIDTH=200 HEIGHT=200  class="img-thumbnail" style="cursor:crosshair">
+                                        </div>
+                                    </center>
+                                </div>
+                            </div>
+
                             <div class="panel panel-default" >
                                 <div class="panel-heading">Zoom (click image)</div>
                                 <div class="panel-body">
@@ -69,10 +78,14 @@
                                  </div>
                             </div>
 
-                        </div>
-
+                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+        <!-- Start of SimpleHitCounter Code -->
+        <div align="center"><a href="http://www.simplehitcounter.com" target="_blank"><img src="http://simplehitcounter.com/hit.php?uid=1986385&f=0&b=16777215" border="0" height="18" width="83" alt="web counter"></a><br><a href="http://www.simplehitcounter.com" target="_blank" style="text-decoration:none;">visits</a></div>
+        <!-- End of SimpleHitCounter Code -->
+
     </body>
 </html>

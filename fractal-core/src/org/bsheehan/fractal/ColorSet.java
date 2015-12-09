@@ -42,6 +42,9 @@ public class ColorSet {
 		COLORMAP_SUNSET,
 		COLORMAP_EARTH,
 		COLORMAP_GRAY,
+		COLORMAP_SUNSET2,
+		COLORMAP_EARTH2,
+		COLORMAP_GRAY2,
 		COLORMAP_BINARY
 	}
 
@@ -150,7 +153,7 @@ public class ColorSet {
 			controlColors.add(DARK_BLUE);
 			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
-			controlColors.add(WHITE);
+			controlColors.add(ORANGE);
 			controlColors.add(DARK_BLUE);
 			controlColors.add(DARK_GREEN);
 
@@ -159,7 +162,7 @@ public class ColorSet {
 			controlColors.add(DARK_BLUE);
 			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
-			controlColors.add(WHITE);
+			controlColors.add(ORANGE);
 			controlColors.add(DARK_BLUE);
 			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
@@ -170,23 +173,25 @@ public class ColorSet {
 		case COLORMAP_SUNSET: {
 			List<byte[]> controlColors = new ArrayList<byte[]>();
 			// first 7 ramps contribute total 254 exponential levels of color
-			controlColors.add(WHITE);
-			controlColors.add(YELLOW);
-			controlColors.add(ORANGE);
-			controlColors.add(RED);
-			controlColors.add(CYAN);
+
+			controlColors.add(DARK_BLUE);
 			controlColors.add(BLUE);
+			controlColors.add(CYAN);
 			controlColors.add(PURPLE);
+			controlColors.add(RED);
+			controlColors.add(ORANGE);
+			controlColors.add(YELLOW);
+
 
 			// following 8 ramps each contribute 256 linear levels each to color map
-			controlColors.add(WHITE);
-			controlColors.add(YELLOW);
-			controlColors.add(ORANGE);
-			controlColors.add(RED);
-			controlColors.add(CYAN);
-			controlColors.add(BLUE);
-			controlColors.add(PURPLE);
 			controlColors.add(DARK_BLUE);
+			controlColors.add(BLUE);
+			controlColors.add(CYAN);
+			controlColors.add(PURPLE);
+			controlColors.add(RED);
+			controlColors.add(ORANGE);
+			controlColors.add(YELLOW);
+			controlColors.add(WHITE);
 
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}

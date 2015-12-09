@@ -18,11 +18,16 @@ public class Complex {
 	public double i;
 	private double squaredR = 0;
 	private double squaredI = 0;
-
+	public double mag = 0;
 	/** Construct a Complex */
-	public Complex(double rr, double ii) {
-		this.r = rr;
-		this.i = ii;
+	public Complex(double r, double i) {
+		this.r = r;
+		this.i = i;
+	}
+
+	public Complex(Complex z) {
+		this.r = z.r;
+		this.i = z.i;
 	}
 
 	/** Display the current Complex as a String, for use in
@@ -31,7 +36,7 @@ public class Complex {
 	@Override
 	public String toString() {
 		final StringBuffer sb = new StringBuffer().append(this.r);
-		if (this.i>0)
+		//if (this.i>0)
 			sb.append('+');  // else append(i) appends - sign
 		return sb.append(this.i).append('i').toString();
 	}
@@ -52,14 +57,16 @@ public class Complex {
 		this.i = i;
 	}
 
-	/** Return the magnitude of a complex number */
-	public double magnitude() {
-		return Math.sqrt(square());
+	/** set values **/
+	public void setValues(Complex z){
+		this.r = z.r;
+		this.i = z.i;
 	}
 
 	/** Return the magnitude of a complex number */
-	public double square() {
-		return this.squaredR + this.squaredI;
+	public double magnitude() {
+		//return Math.sqrt(square());
+		return mag;
 	}
 
 	/** Add another Complex to this one
@@ -75,7 +82,6 @@ public class Complex {
 	public static Complex add(Complex c1, Complex c2) {
 		return new Complex(c1.r+c2.r, c1.i+c2.i);
 	}
-
 
 
 	/** Subtract another Complex from this one
@@ -94,21 +100,64 @@ public class Complex {
 
 	/** Multiply this Complex times another one
 	 */
-	public Complex multiply(Complex other) {
-		final double r1 = this.r;
-		final double i1 = this.i;
-		final double r2= other.r;
-		final double i2 = other.i;
-		this.r = r1*r2 - i1*i2;
-		this.i = r1*i2 + i1*r2;
+	public Complex multiply(Complex z) {
+		double r = this.r;
+		this.r = this.r*z.r - this.i*z.i;
+		this.i = r*z.i + this.i*z.r;
+		return this;
+	}
+
+	public Complex multiplyAdd(Complex z, Complex c) {
+		double r = this.r;
+		this.r = this.r*z.r - this.i*z.i +c.r;
+		this.i = r*z.i + this.i*z.r + c.i;
+
 		return this;
 	}
 
 	/** Multiply this Complex times another one
 	 */
 	public Complex squared() {
-		final double r1 = this.r;
-		final double i1 = this.i;
+
+		double squaredR = this.r*this.r;
+		double squaredI = this.i*this.i;
+		mag = squaredR + squaredI;
+		this.i = 2.0*this.r*this.i;
+		this.r = squaredR - squaredI;
+		return this;
+	}
+
+	public Complex cubed() {
+
+		double oldR = this.r;
+		double oldI = this.i;
+		return this.squared().multiply(new Complex(oldR,oldI));
+	}
+
+	public Complex cubedAdd(Complex c) {
+
+		double oldR = this.r;
+		double oldI = this.i;
+		return this.squared().multiply(new Complex(oldR,oldI)).add(c);
+	}
+
+	public Complex squaredAdd(Complex c) {
+
+		this.squaredR = this.r*this.r;
+		this.squaredI = this.i*this.i;
+		this.mag = this.squaredR + this.squaredI;
+		double r2 = this.squaredR - this.squaredI  + c.r;
+		this.i = 2.0*this.r*this.i + c.i;
+		this.r = r2;
+
+		return this;
+	}
+
+	/** Multiply this Complex times another one - used for burning ship fractal
+	 */
+	public Complex squaredAbs() {
+		final double r1 = Math.abs(this.r);
+		final double i1 =  Math.abs(this.i);
 		this.squaredR = r1*r1;
 		this.squaredI = i1*i1;
 		this.r = this.squaredR - this.squaredI;

@@ -30,7 +30,7 @@ public interface IIteratedFunction {
 	 * @param z
 	 * @return
 	 */
-	short iterate(Complex z);
+	short iterate(Complex z, Complex c);
 
 	void setScale(double screenAspectRatio);
 

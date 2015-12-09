@@ -9,9 +9,9 @@ public class FractalConfig {
 		this.setFractalRegion(new Rectangle.Double(left, top, right - left, bottom - top));
 	}
 
-	public float singleIterMaxThreshold; // [0, 1]
+	//public float singleIterMaxThreshold; // [0, 1]
 
-	public int itersMinNonZeroThreshold; //[0, max iterations]
+	//public int itersMinNonZeroThreshold; //[0, max iterations]
 
 	public boolean isCentered; // fix zoom in on origin of complex plane
 

@@ -31,6 +31,10 @@ object Application extends Controller {
   colorSetMap.put(ColorSetType.COLORMAP_SUNSET, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET))
   colorSetMap.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
   colorSetMap.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
+  colorSetMap.put(ColorSetType.COLORMAP_EARTH2, new ColorSet(2048, ColorSetType.COLORMAP_EARTH2))
+  colorSetMap.put(ColorSetType.COLORMAP_SUNSET2, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET2))
+  colorSetMap.put(ColorSetType.COLORMAP_GRAY2, new ColorSet(2048, ColorSetType.COLORMAP_GRAY2))
+
 
   val fractalService = FractalService
 
@@ -53,15 +57,21 @@ object Application extends Controller {
 
         val fractalInfos: util.List[FractalInfo] = fractalService.getFractals;
 
-        var js = Json.obj()
+        val fractalMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
         fractalInfos.asScala.toList.foreach (node => {
-          val mandelbrot = models.Fractal(node.`type`.ordinal(), node.config.getFractalRegion)
-          js = Json.obj(
-            "id" -> mandelbrot.id,
-            "region" -> Json.toJson(mandelbrot.region)
+          val fractal = models.Fractal(node.`type`.ordinal().toString, node.config.getFractalRegion, node.name, node.description)
+
+          val fractalMap: Map[String, String] = Map(
+            "id" -> fractal.id,
+            "region" -> Json.toJson(fractal.region).toString(),
+            "name" -> fractal.name,
+            "description" -> fractal.description
           )
+          fractalMapList.+=:(Json.toJson(fractalMap))
         })
-        Ok(js).as("application/json")
+
+        val fractalMapListMap: Map[String, ListBuffer[JsValue]] =  Map("fractals" -> fractalMapList)
+        Ok(Json.toJson(fractalMapListMap)).as("application/json")
     }
   }
 
@@ -109,17 +119,21 @@ object Application extends Controller {
       }
 
       val json = request.body.asJson.get
-      val region = json \ "region"
+      val regionStr = json \ "region"
+      val region = Json.parse(regionStr.toString())
       val imageSize = json \ "size"
+      val colorId: JsValue = json \ "colorId"
       val id: JsValue = json \ "id"
-      val colorSetId: ColorSetType = ColorSetType.values()(id.as[String].toInt)
+
+      val colorSetId: ColorSetType = ColorSetType.values()(colorId.as[String].toInt)
+      val fractalId: FractalType = FractalType.values()(id.as[String].toInt)
 
       val rect = new Rectangle2D.Double((region \ "x").as[Double],
       (region \ "y").as[Double],
       (region \ "w").as[Double],
       (region \ "h").as[Double])
 
-      val fractal: IFractal = createFractal(FractalType.MANDELBROT)
+      val fractal: IFractal = createFractal(fractalId)
 
       fractal.getFractalFunction.getConfig.setFractalRegion(rect)
 
