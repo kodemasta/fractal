@@ -42,10 +42,8 @@ public class ColorSet {
 		COLORMAP_SUNSET,
 		COLORMAP_EARTH,
 		COLORMAP_GRAY,
-		COLORMAP_SUNSET2,
-		COLORMAP_EARTH2,
-		COLORMAP_GRAY2,
-		COLORMAP_BINARY
+		COLORMAP_BINARY,
+		COLORMAP_BLACK
 	}
 
 	public static List<ColorInfo> getColorInfos(){
@@ -55,6 +53,7 @@ public class ColorSet {
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_EARTH.ordinal(), "Earth", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY.ordinal(), "Gray", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_BINARY.ordinal(), "Binary", "todo"));
+		//colors.add(new ColorInfo(ColorSetType.COLORMAP_BLACK.ordinal(), "Black", "todo"));
 
 		return colors;
 	}
@@ -133,7 +132,8 @@ public class ColorSet {
 		}
 		break;
 		case COLORMAP_BINARY: {
-			for (int i = 0; i < maxIterations; ++i) {
+
+			for (int i = 0; i < maxIterations-1; ++i) {
 				if (i%2==0) {
 					colors_rgb[i][0] = (byte) (0xFF);
 					colors_rgb[i][1] = (byte) (0xFF);
@@ -146,7 +146,20 @@ public class ColorSet {
 			}
 		}
 		break;
-		case COLORMAP_EARTH: {
+			case COLORMAP_BLACK: {
+				colors_rgb[maxIterations-1][0] = (byte) (0x0);
+				colors_rgb[maxIterations-1][1] = (byte) (0x0);
+				colors_rgb[maxIterations-1][2] = (byte) (0x0);
+
+				for (int i = 0; i < maxIterations-1; ++i) {
+					colors_rgb[i][0] = (byte) (0xFF);
+					colors_rgb[i][1] = (byte) (0xFF);
+					colors_rgb[i][2] = (byte) (0xFF);
+
+				}
+			}
+			break;
+			case COLORMAP_EARTH: {
 			List<byte[]> controlColors = new ArrayList<byte[]>();
 			// first 7 ramps contribute total 254 exponential levels of color
 			controlColors.add(WHITE);

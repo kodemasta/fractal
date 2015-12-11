@@ -12,7 +12,11 @@ import java.awt.*;
  */
 public abstract class AbstractFractalFunction implements IIteratedFunction {
 
-	public FractalInfo fractalInfo;
+	protected FractalInfo fractalInfo;
+
+	public FractalInfo getInfo() {
+		return fractalInfo;
+	}
 
 	/** 
 	 * Set the center point of where a particular rectangular region of the function is to be calculated.

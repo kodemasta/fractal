@@ -10,10 +10,11 @@ package org.bsheehan.fractal;
  */
 public class IteratedFunctionFactory {
 	/** enum for different fractal interated systme types **/
-	public enum FractalType { 
+	public enum FractalType {
+		NONE,
 		MANDELBROT,
 		MANDELBROT_CUBIC,
-		JULIASET
+		MANDELBROT_JULIA,
 	};
 
 	/**
@@ -27,8 +28,8 @@ public class IteratedFunctionFactory {
 			return new MandelbrotFunction();
 		case MANDELBROT_CUBIC:
 			return new MandelbrotCubicFunction();
-		//case JULIASET:
-		//	return new JuliaSetFunction();
+		case MANDELBROT_JULIA:
+			return new MandelbrotJuliaFunction();
 		}
 		return null;
 	}

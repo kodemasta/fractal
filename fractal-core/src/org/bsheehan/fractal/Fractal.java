@@ -120,43 +120,52 @@ public class Fractal implements IFractal {
 		// plane.
 		// outer loop iterates over imaginary axis of specified region
 
-		//this.fractalFunction.getConfig().zConstant.setValues(-0.4,0.6);
+
+
+
+		boolean julia = false;
+		if (this.fractalFunction.getInfo().type.equals(IteratedFunctionFactory.FractalType.MANDELBROT_JULIA)) {
+			julia = true;
+			//this.fractalFunction.getConfig().zConstant.setValues(-0.4, 0.6);
+		}
 		Complex c = new Complex(this.fractalFunction.getConfig().zConstant);
 		Complex z = new Complex(this.fractalFunction.getConfig().zOrigin);
 
-		// mandelbrot iteration
-		for (int pixelY = 0; pixelY < height; pixelY++) {
-			// convert pixel y coordinate to imaginary component of zConstant, cy
-			c.i = kConvertPixelToImagAxis * pixelY + minY; //top
-			// inner loop iterates over real axis of specified region
-			for (int pixelX = 0; pixelX < width; pixelX++) {
-				// convert pixel x coordinate to real component of zConstant, cx
-				c.r = kConvertPixelToRealAxis * pixelX + minX; //left
-				z.setValues(this.fractalFunction.getConfig().zOrigin);
-				this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z,c);
+		if (!julia) {
+			// mandelbrot iteration
+			for (int pixelY = 0; pixelY < height; pixelY++) {
+				// convert pixel y coordinate to imaginary component of zConstant, cy
+				c.i = kConvertPixelToImagAxis * pixelY + minY; //top
+				// inner loop iterates over real axis of specified region
+				for (int pixelX = 0; pixelX < width; pixelX++) {
+					// convert pixel x coordinate to real component of zConstant, cx
+					c.r = kConvertPixelToRealAxis * pixelX + minX; //left
+					z.setValues(this.fractalFunction.getConfig().zOrigin);
+					this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z, c);
 
-				//this.iterationHistogram[numIterations]++;
-				//iterationHistogramTotal++;
+					//this.iterationHistogram[numIterations]++;
+					//iterationHistogramTotal++;
 
+				}
+			}
+		} else {
+
+			// julia iteration
+			for (int pixelY = 0; pixelY < height; pixelY++) {
+				// convert pixel y coordinate to imaginary component of zConstant, cy
+				z.i = kConvertPixelToImagAxis * pixelY + minY; //top
+				// inner loop iterates over real axis of specified region
+				for (int pixelX = 0; pixelX < width; pixelX++) {
+					// convert pixel x coordinate to real component of zConstant, cx
+					z.r = kConvertPixelToRealAxis * pixelX + minX; //left
+					c.setValues(this.fractalFunction.getConfig().zConstant);
+					this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z, c);
+
+					//this.iterationHistogram[numIterations]++;
+					//iterationHistogramTotal++;
+				}
 			}
 		}
-
-//		// julia iteration
-//		for (int pixelY = 0; pixelY < height; pixelY++) {
-//			// convert pixel y coordinate to imaginary component of zConstant, cy
-//			z.i = kConvertPixelToImagAxis * pixelY + minY; //top
-//			// inner loop iterates over real axis of specified region
-//			for (int pixelX = 0; pixelX < width; pixelX++) {
-//				// convert pixel x coordinate to real component of zConstant, cx
-//				z.r = kConvertPixelToRealAxis * pixelX + minX; //left
-//				c.setValues(this.fractalFunction.getConfig().zConstant);
-//				this.iterationBuffer[pixelY][pixelX] = this.fractalFunction.iterate(z,c);
-//
-//				//this.iterationHistogram[numIterations]++;
-//				//iterationHistogramTotal++;
-//
-//			}
-//		}
 
 //		for (int i = 0; i < maxIterations; ++i)
 //			if (this.iterationHistogram[i] > 0)

@@ -31,9 +31,7 @@ object Application extends Controller {
   colorSetMap.put(ColorSetType.COLORMAP_SUNSET, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET))
   colorSetMap.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
   colorSetMap.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
-  colorSetMap.put(ColorSetType.COLORMAP_EARTH2, new ColorSet(2048, ColorSetType.COLORMAP_EARTH2))
-  colorSetMap.put(ColorSetType.COLORMAP_SUNSET2, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET2))
-  colorSetMap.put(ColorSetType.COLORMAP_GRAY2, new ColorSet(2048, ColorSetType.COLORMAP_GRAY2))
+  colorSetMap.put(ColorSetType.COLORMAP_BLACK, new ColorSet(2048, ColorSetType.COLORMAP_BLACK))
 
 
   val fractalService = FractalService
@@ -59,10 +57,11 @@ object Application extends Controller {
 
         val fractalMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
         fractalInfos.asScala.toList.foreach (node => {
-          val fractal = models.Fractal(node.`type`.ordinal().toString, node.config.getFractalRegion, node.name, node.description)
+          val fractal = models.Fractal(node.`type`.ordinal().toString, node.`parentType`.ordinal().toString, node.config.getFractalRegion, node.name, node.description)
 
           val fractalMap: Map[String, String] = Map(
             "id" -> fractal.id,
+            "parentId" -> fractal.parentId,
             "region" -> Json.toJson(fractal.region).toString(),
             "name" -> fractal.name,
             "description" -> fractal.description
@@ -119,9 +118,10 @@ object Application extends Controller {
       }
 
       val json = request.body.asJson.get
-      val regionStr = json \ "region"
-      val region = Json.parse(regionStr.toString())
+      val region = json \ "region"
+      //val region = Json.parse(regionStr.toString())
       val imageSize = json \ "size"
+      val julia: JsValue = json \ "julia"
       val colorId: JsValue = json \ "colorId"
       val id: JsValue = json \ "id"
 
@@ -136,6 +136,8 @@ object Application extends Controller {
       val fractal: IFractal = createFractal(fractalId)
 
       fractal.getFractalFunction.getConfig.setFractalRegion(rect)
+      if (julia.as[JsObject].fields.size != 0)
+        fractal.getFractalFunction.getConfig.zConstant = new Complex((julia \ "x").as[Double], (julia \ "y").as[Double]);
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
       fractal.generate()

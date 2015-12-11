@@ -1,29 +1,19 @@
 package org.bsheehan.fractal;
 
-import java.awt.*;
-
-
-/**
- * @author bsheehan@baymoon.com
- * @date April 12, 2011
- * 
- * @name MandelbrotFractal
- * @description A Mandelbrot set iterated function generator class
- */
-public class MandelbrotFunction extends AbstractFractalFunction {
+public class MandelbrotJuliaFunction extends AbstractFractalFunction {
 
 	/**
 	 * Constructor
 	 */
-	public MandelbrotFunction() {
+	public MandelbrotJuliaFunction() {
 		double left = -2.0;
-		double top = -1.5;
-		double right = 1.0;
-		double bottom = 1.5;
+		double top = -2.0;
+		double right = 2.0;
+		double bottom = 2.0;
 
 		FractalConfig config = new FractalConfig(left, top, right, bottom);
 
-		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT, IteratedFunctionFactory.FractalType.NONE, "Mandelbrot Fractal", "Mandelbrot", config);
+		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT_JULIA, IteratedFunctionFactory.FractalType.MANDELBROT, "Mandelbrot Julia Set", "Mandelbrot Julia", config);
 	}
 
 	/**

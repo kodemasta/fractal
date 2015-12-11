@@ -14,11 +14,7 @@ public interface IIteratedFunction {
 
 	FractalConfig getConfig();
 
-
-		/**
-         * reset to original boundary that defines the fractal region in the complex plane.
-         */
-	void reset();
+	FractalInfo getInfo();
 
 	/**
 	 * Adjust the center point of the region of interest for this iterated system.

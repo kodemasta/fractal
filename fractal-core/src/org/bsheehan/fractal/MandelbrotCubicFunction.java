@@ -16,19 +16,11 @@ public class MandelbrotCubicFunction extends AbstractFractalFunction {
 	 * Constructor
 	 */
 	public MandelbrotCubicFunction() {
-		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT_CUBIC, "Mandelbrot Cubic Fractal", "Mandelbrot Cubic", new FractalConfig(-2.5, -1.75, 1.0, 1.75));
-		fractalInfo.config.isCentered = true;
-		reset();
+		FractalConfig config = new FractalConfig(-1.75, -1.75, 1.75, 1.75);
+		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT_CUBIC, IteratedFunctionFactory.FractalType.NONE, "Mandelbrot Cubic Fractal", "Mandelbrot Cubic", config);
 	}
 
-	public void reset() {
-		double left = -1.75f;
-		double top = -1.75f;
-		double right = 1.75f;
-		double bottom = 1.75f;
 
-		this.fractalInfo.config.setFractalRegion(new Rectangle.Double(left, top, right - left, bottom - top));
-	}
 
 	/**
 	 * This iterates over the constant of z = z^2 + constant
