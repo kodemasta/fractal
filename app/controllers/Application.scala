@@ -140,7 +140,13 @@ object Application extends Controller {
         fractal.getFractalFunction.getConfig.zConstant = new Complex((julia \ "x").as[Double], (julia \ "y").as[Double]);
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
-      fractal.generate()
+      if (fractalId ==FractalType.MANDELBROT_CUBIC_JULIA ||
+        fractalId==FractalType.MANDELBROT_JULIA ||
+        fractalId==FractalType.MANDELBROT_QUARTIC_JULIA)
+        fractal.generate(true);
+      else
+        fractal.generate(false);
+
       fractal.setColorSet(colorSetMap.get(colorSetId).get)
       fractal.assignColors()
       val buffer: ByteBuffer = fractal.getBufferColors

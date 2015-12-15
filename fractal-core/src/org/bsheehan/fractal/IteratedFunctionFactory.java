@@ -15,6 +15,9 @@ public class IteratedFunctionFactory {
 		MANDELBROT,
 		MANDELBROT_CUBIC,
 		MANDELBROT_JULIA,
+		MANDELBROT_CUBIC_JULIA,
+		MANDELBROT_QUARTIC,
+		MANDELBROT_QUARTIC_JULIA
 	};
 
 	/**
@@ -30,6 +33,12 @@ public class IteratedFunctionFactory {
 			return new MandelbrotCubicFunction();
 		case MANDELBROT_JULIA:
 			return new MandelbrotJuliaFunction();
+		case MANDELBROT_CUBIC_JULIA:
+			return new MandelbrotCubicJuliaFunction();
+		case MANDELBROT_QUARTIC:
+			return new MandelbrotQuarticFunction();
+		case MANDELBROT_QUARTIC_JULIA:
+			return new MandelbrotQuarticJuliaFunction();
 		}
 		return null;
 	}

@@ -131,14 +131,14 @@ public class Complex {
 
 		double oldR = this.r;
 		double oldI = this.i;
-		return this.squared().multiply(new Complex(oldR,oldI));
+		return this.squared().multiply(new Complex(oldR, oldI));
 	}
 
 	public Complex cubedAdd(Complex c) {
 
 		double oldR = this.r;
 		double oldI = this.i;
-		return this.squared().multiply(new Complex(oldR,oldI)).add(c);
+		return this.squared().multiply(new Complex(oldR, oldI)).add(c);
 	}
 
 	public Complex squaredAdd(Complex c) {
@@ -152,6 +152,7 @@ public class Complex {
 
 		return this;
 	}
+
 
 	/** Multiply this Complex times another one - used for burning ship fractal
 	 */
@@ -167,12 +168,12 @@ public class Complex {
 
 	/** Multiply this Complex times another one
 	 */
-	public Complex quartic() {
-		final double r1 = this.r;
-		final double i1 = this.i;
-		this.r = r1*r1 - i1*i1;
-		this.i = 2.0*r1*i1;
-		return this.squared().squared();
+	public Complex quarticAdd(Complex c) {
+		this.squared().squared();
+		//this.mag = this.squaredR + this.squaredI;
+		this.r += c.r;
+		this.i += c.i;
+		return this;
 	}
 
 	/** Multiply two Complexes

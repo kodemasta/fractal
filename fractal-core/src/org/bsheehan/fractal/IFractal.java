@@ -17,7 +17,7 @@ public interface IFractal {
 	public void setDims(int currDim, int currDim2);
 
 	/** Generate an RGB buffer from the iterated function for this fractal **/
-	public boolean generate();
+	public boolean generate(boolean julia);
 
 	/** Assign RGB values for the calculated array of iteration values for this fractal **/
 	public void assignColors();

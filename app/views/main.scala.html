@@ -1,87 +1,194 @@
 @(title: String)(content: Html)
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <title>@title</title>
+    </head>
+    <body>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))'>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <link href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))' rel='stylesheet'>
+        <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' type='text/javascript'></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src='@routes.Assets.at("fractal.js")'></script>
-    </head>
 
-    <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Fractal Scope</a>
-            </div>
-            <div>
-                  <ul class="nav navbar-nav">
-                      <li id=""><a href="#"> </a></li>
-                      <li id="fractal-change" class="dropdown">
-                          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Select <span class="caret"></span></a>
-                          <ul id="fractal-change-menu" class="dropdown-menu"></ul>
-                      </li>
-                      <li id="fractal-name"><a href="#"><span class="label label-info">Name</span></a></li>
-                      <li id="fractal-loading"><a href="#"><span class="label label-success">Computing</span></a></li>
-                  </ul>
-            </div>
-        </div>
-    </nav>
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '929697287112327',
+              xfbml      : true,
+              version    : 'v2.5'
+            });
+          };
 
-    <div class="container">
-                <div class="panel panel-default" >
-                    <div class="col-lg-6" style="height:10px;"></div> <!--top margin -->
-                    <div class="row">
-                        <div class="col-sm-8 col-md-8 col-lg-8">
-                            <div>
-                                <IMG SRC="" ALT="" id="fractal-image" WIDTH=600 HEIGHT=600 class="img-circle" style="cursor:crosshair">
-                            </div>
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+        </script>
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Fractal Scope</a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li id="">
+                            <a href="#"></a>
+                        </li>
+                        <li class="dropdown" id="fractal-change">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Fractal<span class="caret"></span></a>
+                            <ul class="dropdown-menu" id="fractal-change-menu"></ul>
+                        </li>
+                        <li id="fractal-name">
+                            <a href="#"><span class="label label-info">Name</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+
+            <div class="panel panel-default">
+                <div class="row">
+                    <div class="col-sm-3 col-md-3 col-lg-3 col-sm-offset-1 col-md-offset-1 col-l-lg-offset-1">
+                        <div class="form-group">
+                            <p class="text-info">Zoom Level</p>
+                            <table width="200">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group ">
+                                                <span id="minus-button" class="btn btn-default input-group-addon btn-number" data-type="minus" data-field="59-L" disabled="true">
+                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                </span>
+                                                <input id="59-L" style="text-align:center;" type="number" pattern="[0-9]*" class="form-control input-number" value="0" min="0" max="99" grade="5.9" climb_type_id="3" climb_type_short_name="L" disabled="true">
+                                                <span id="plus-button" class="btn btn-default input-group-addon btn-number" data-type="plus" data-field="59-L">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </span>
+                                                <span class = "input-group-btn">
+                                                    <button id="reset-button2" class = "btn btn-default" type = "button">Reset</button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                     </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-sm-4 col-md-4 col-lg-4">
-                            <div id="julia-picker" class="panel panel-default" >
-                                <div class="panel-heading">Julia Picker (click fractal boundary)</div>
-                                <div class="panel-body">
-                                    <center>
-                                        <div>
-                                            <IMG SRC="" ALT="" id="julia-picker-image" WIDTH=200 HEIGHT=200  style="cursor:crosshair">
-                                        </div>
-                                    </center>
-                                </div>
-                            </div>
-                            <div class="panel panel-default" >
-                                <div class="panel-heading">Zoom (click image)</div>
-                                <div class="panel-body">
-                                    <center>
-                                    <div class="btn-group-vertical" role="group" aria-label="...">
-                                        <button id="zoom-in-button" type="button" class="btn btn-default" style="font-size:18px;">+</button>
-                                        <button id="zoom-out-button" type="button" class="btn btn-default" style="font-size:18px;">-</button>
-                                        <button id="reset-button" type="button" class="btn btn-default">Reset</button>
-                                        <h4><span id="zoom-badge" class="badge badge-default">0</span></h4>
-                                    </div>
-                                    </center>
-                                </div>
-                            </div>
-                            <div class="panel panel-default" >
-                                <div class="panel-heading">Colors</div>
-                                <div class="panel-body">
-                                    <center>
-                                        <div id="color-buttons" class="btn-group-vertical" role="group" aria-label="...">
-                                        </div>
-                                    </center>
-                                 </div>
-                            </div>
-                         </div>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2 col-sm-offset-1 col-md-offset-1 col-l-lg-offset-1">
+                        <div class="form-group">
+                            <p class="text-info">Colors</p>
+                            <table width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <select class="form-control" name="color-select" id="color-select"></select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2 col-sm-offset-1 col-md-offset-1 col-l-lg-offset-1">
+                        <div class="form-group">
+                            <p class="text-info">Size (pixels)</p>
+                            <table width="120">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control" name="size-select" id="size-select">
+                                                <option value="512">512 x 512</option>
+                                                <option value="1024">1024 x 1024</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        <!-- Start of SimpleHitCounter Code -->
-        <div align="center"><a href="http://www.simplehitcounter.com" target="_blank"><img src="http://simplehitcounter.com/hit.php?uid=1986385&f=0&b=16777215" border="0" height="18" width="83" alt="web counter"></a><br><a href="http://www.simplehitcounter.com" target="_blank" style="text-decoration:none;">visits</a></div>
-        <!-- End of SimpleHitCounter Code -->
+            <div class="panel panel-default">
+                <div class="col-lg-12" style="height:10px;"></div><!--top margin -->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-default" id="julia-picker">
+                            <div class="panel-heading">
+                                Julia Set Picker - Click for Julia Set
+                            </div>
+                            <div class="panel-body">
+                                <center>
+                                    <div><img alt="" class="img-thumbnail" width="256" height="256" id="julia-picker-image" src="" style="cursor:crosshair" ></div>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-default" id="fractal-panel">
+                            <div class="panel-heading">
+                               Fractal Viewer - Click to Zoom
+                                <div style="float: right;" id="fractal-loading" class="label label-success">Computing</div>
+                            </div>
+                            <div class="panel-body">
+                                <center>
+                                    <div><img alt="" class="img-circle"  width="512" height="512" id="fractal-image" src="" style="cursor:crosshair"></div>
+                                </center>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
 
+            <div class="panel panel-default">
+                <div class="row">
+                    <!-- Start of FB Code -->
+                    <div class="row fb-like" data-action="like" data-href="http://fractalscope.herokuapp.com"
+                         data-layout="button_count" data-share="true" data-show-faces="true">
+                    </div>
+                </div>
+                <!-- Start of SimpleHitCounter Code -->
+                <div class="row">
+                    <div>
+                        <a href="http://www.simplehitcounter.com" target="_blank">
+                            <img alt="web counter" border="0" height="18" src="http://simplehitcounter.com/hit.php?uid=1986385&f=0&b=16777215" width="83"></a>
+                        <a href="http://www.simplehitcounter.com" style="text-decoration:none;" target="_blank">visits</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
+
+<!--<div class="panel panel-default">
+    <div class="panel-heading">
+        Zoom (click image)
+    </div>
+    <div class="panel-body">
+        <center>
+            <div aria-label="..." class="btn-group-vertical" role="group">
+                <button class="btn btn-default" id="zoom-in-button" style="font-size:18px;" type="button">+</button>
+                <button class="btn btn-default" id="zoom-out-button" style="font-size:18px;" type="button">-</button>
+                <button class="btn btn-default" id="reset-button" type="button">Reset</button>
+                <h4><span class="badge badge-default" id="zoom-badge">0</span></h4>
+            </div>
+        </center>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Colors
+    </div>
+    <div class="panel-body">
+        <center>
+            <div aria-label="..." class="btn-group-vertical" id="color-buttons" role="group"></div>
+        </center>
+    </div>
+</div>
+</div>-->

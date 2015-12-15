@@ -13,7 +13,10 @@ public class MandelbrotJuliaFunction extends AbstractFractalFunction {
 
 		FractalConfig config = new FractalConfig(left, top, right, bottom);
 
-		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT_JULIA, IteratedFunctionFactory.FractalType.MANDELBROT, "Mandelbrot Julia Set", "Mandelbrot Julia", config);
+		fractalInfo = new FractalInfo(IteratedFunctionFactory.FractalType.MANDELBROT_JULIA,
+				IteratedFunctionFactory.FractalType.MANDELBROT,
+				"Mandelbrot Julia Set",
+				"Mandelbrot (Julia)", config);
 	}
 
 	/**

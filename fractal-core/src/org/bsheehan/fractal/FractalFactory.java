@@ -18,6 +18,9 @@ public class FractalFactory {
 
 	static public List<FractalInfo> getFractals() {
 		List<FractalInfo> fractals = new ArrayList<FractalInfo>();
+		fractals.add(new MandelbrotQuarticJuliaFunction().fractalInfo);
+		fractals.add(new MandelbrotQuarticFunction().fractalInfo);
+		fractals.add(new MandelbrotCubicJuliaFunction().fractalInfo);
 		fractals.add(new MandelbrotJuliaFunction().fractalInfo);
 		fractals.add(new MandelbrotCubicFunction().fractalInfo);
 		fractals.add(new MandelbrotFunction().fractalInfo);
@@ -50,7 +53,7 @@ public class FractalFactory {
 
 		// update the resolution and generate
 		//fractal.setDims(dim, dim);
-		fractal.generate();
+		//fractal.generate();
 		// now that we have a cool region, lets assign a cool colormap
 		//fractal.setRandomColorSet();
 		fractal.assignColors();

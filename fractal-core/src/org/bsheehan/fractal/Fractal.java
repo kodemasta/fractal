@@ -99,11 +99,11 @@ public class Fractal implements IFractal {
 	 * Iterate over fractal iteration function to create buffer of iteration values
 	 * per pixel. 
 	 */
-	public boolean generate() {
-		return generate(this.rgbBuffer, this.screenWidth, this.screenHeight);
+	public boolean generate(boolean julia) {
+		return generate(this.rgbBuffer, this.screenWidth, this.screenHeight, julia);
 	}
 
-	private boolean generate(ByteBuffer buffer, int width, int height) {
+	private boolean generate(ByteBuffer buffer, int width, int height, boolean julia) {
 		final double kConvertPixelToRealAxis = (double)this.fractalFunction.getConfig().getFractalRegion().getWidth()
 		/ width;
 		final double kConvertPixelToImagAxis = (double)this.fractalFunction.getConfig().getFractalRegion().getHeight()
@@ -121,13 +121,6 @@ public class Fractal implements IFractal {
 		// outer loop iterates over imaginary axis of specified region
 
 
-
-
-		boolean julia = false;
-		if (this.fractalFunction.getInfo().type.equals(IteratedFunctionFactory.FractalType.MANDELBROT_JULIA)) {
-			julia = true;
-			//this.fractalFunction.getConfig().zConstant.setValues(-0.4, 0.6);
-		}
 		Complex c = new Complex(this.fractalFunction.getConfig().zConstant);
 		Complex z = new Complex(this.fractalFunction.getConfig().zOrigin);
 
