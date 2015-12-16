@@ -42,7 +42,6 @@ public class FractalFactory {
 	}
 
 
-
 	/**
 	 * Once a cool fractal region has been located using makeItCool, a full color mapped
 	 * fractal can be generated using this call.
