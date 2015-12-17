@@ -37,18 +37,20 @@ $(document).ready(function() {
             console.log("color-select append " + colorData.colors[i].id + " " + colorData.colors[i].name);
             var option = '<option value="' + colorData.colors[i].id + '" id="color-select' + colorData.colors[i].id + '">' + colorData.colors[i].name + '</option>';
             $("#color-select").append(option);
-            //var id = "color-select" + colorData.colors[i].id;
-            //$("#" + id).on("click", clickColor);
         }
-        $("#color-select").on("click", function() {
-            clickColor($(this).val())
+
+        $("select#color-select").change(function(){
+           clickColor($(this).children(":selected").val())
         });
-        $("#size-select").on("click", function() {
-            clickSize($(this).val())
+
+        $("select#size-select").change(function(){
+           clickSize($(this).children(":selected").val())
         });
-        $("#fractal-select").on("click", function() {
-            clickFractalType($(this).val())
+
+        $("select#fractal-select").change(function(){
+           clickFractalType($(this).children(":selected").val())
         });
+
         setFractal(1)
         setColor(2)
         var colorOption = document.getElementById('color-select');
@@ -74,7 +76,7 @@ $(document).ready(function() {
     }
 
     function toggleJuliaPreviewCompute(toggle) {
-        var img = document.getElementById('julia-preview-image');
+        var img = document.getElementById('fractal-image');
         var img2 = document.getElementById('julia-preview-image');
         var img3 = document.getElementById('julia-picker-image');
         if (toggle) {
@@ -87,8 +89,8 @@ $(document).ready(function() {
             computingJulia = false;
             jQuery('#julia-fractal-loading').hide();
             $(img).attr("style", 'cursor:crosshair;');
-            $(img2).attr("style", 'cursor:crosshair;');
-            $(img3).attr("style", 'cursor:crosshair;');
+            $(img2).attr("style", '');
+            $(img3).attr("style", 'cursor:crosshair');
         }
     }
 
@@ -351,8 +353,10 @@ $(document).ready(function() {
     });
 
     function clickColor() {
+
         var $this = $(this);
         id = $this.attr("value");
+        console.log("clickColor1 " + id);
         if (selectedColor.id == id) return;
         zoomMode = 0;
         setColor(id);
@@ -361,7 +365,8 @@ $(document).ready(function() {
     }
 
     function clickColor(id) {
-        console.log("clickColor " + id);
+
+        console.log("clickColor2 " + id);
         if (selectedColor.id == id) return;
         zoomMode = 0;
         setColor(id);

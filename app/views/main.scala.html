@@ -3,11 +3,15 @@
 <html>
 <head>
     <title>@title</title>
+    <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
+    <link rel="icon" href="@routes.Assets.at("images/favicon.ico")">
+
 </head>
 <body>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport">
 <link href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))' rel='stylesheet'>
+
 <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' type='text/javascript'></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src='@routes.Assets.at("fractal.js")'></script>
@@ -187,30 +191,3 @@
 </div>
 </body>
 </html>
-
-<!--<div class="panel panel-default">
-    <div class="panel-heading">
-        Zoom (click image)
-    </div>
-    <div class="panel-body">
-        <center>
-            <div aria-label="..." class="btn-group-vertical" role="group">
-                <button class="btn btn-default" id="zoom-in-button" style="font-size:18px;" type="button">+</button>
-                <button class="btn btn-default" id="zoom-out-button" style="font-size:18px;" type="button">-</button>
-                <button class="btn btn-default" id="reset-button" type="button">Reset</button>
-                <h4><span class="badge badge-default" id="zoom-badge">0</span></h4>
-            </div>
-        </center>
-    </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        Colors
-    </div>
-    <div class="panel-body">
-        <center>
-            <div aria-label="..." class="btn-group-vertical" id="color-buttons" role="group"></div>
-        </center>
-    </div>
-</div>
-</div>-->
