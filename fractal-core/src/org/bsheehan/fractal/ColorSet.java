@@ -18,6 +18,7 @@ public class ColorSet {
 	final byte[] BLACK = {0, 0, 0};
 	final byte[] BLUE = {0, 0, (byte)255};
 	final byte[] RED = {(byte)255, 0, 0};
+	final byte[] DARK_RED = {(byte)150, 50, 50};
 	final byte[] GREEN = {0, (byte)255, 0};
 	final byte[] CYAN = {0, (byte)255, (byte)255};
 	final byte[] MAGENTA = {(byte)255, 0, (byte)255};
@@ -42,16 +43,28 @@ public class ColorSet {
 		COLORMAP_SUNSET,
 		COLORMAP_EARTH,
 		COLORMAP_GRAY,
+		COLORMAP_GRAY2,
 		COLORMAP_BINARY,
-		COLORMAP_BLACK
+		COLORMAP_BLACK,
+		COLORMAP_WHITE,
+		COLORMAP_FIRE,
+		COLORMAP_RAINBOW,
+		COLORMAP_SNOW
+
 	}
 
 	public static List<ColorInfo> getColorInfos(){
 		List<ColorInfo> colors = new ArrayList<ColorInfo>();
 
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_WHITE.ordinal(), "White", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_BLACK.ordinal(), "Black", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_RAINBOW.ordinal(), "Rainbow", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_SNOW.ordinal(), "Snow", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_FIRE.ordinal(), "Fire", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_SUNSET.ordinal(), "Sunset", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_EARTH.ordinal(), "Earth", "todo"));
-		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY.ordinal(), "Gray", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY2.ordinal(), "Gray-2", "todo"));
+		colors.add(new ColorInfo(ColorSetType.COLORMAP_GRAY.ordinal(), "Gray-1", "todo"));
 		colors.add(new ColorInfo(ColorSetType.COLORMAP_BINARY.ordinal(), "Binary", "todo"));
 		//colors.add(new ColorInfo(ColorSetType.COLORMAP_BLACK.ordinal(), "Black", "todo"));
 
@@ -131,7 +144,30 @@ public class ColorSet {
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-		case COLORMAP_BINARY: {
+			case COLORMAP_GRAY2: {
+				List<byte[]> controlColors = new ArrayList<byte[]>();
+				// first 7 ramps contribute total 254 exponential levels of color
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+
+				// following 8 ramps each contribute 256 linear levels each to color map
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+				controlColors.add(WHITE);
+				controlColors.add(BLACK);
+
+				createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+			}
+			break;	case COLORMAP_BINARY: {
 
 			for (int i = 0; i < maxIterations-1; ++i) {
 				if (i%2==0) {
@@ -159,26 +195,39 @@ public class ColorSet {
 				}
 			}
 			break;
+			case COLORMAP_WHITE: {
+				colors_rgb[maxIterations-1][0] = (byte) (0xFF);
+				colors_rgb[maxIterations-1][1] = (byte) (0xFF);
+				colors_rgb[maxIterations-1][2] = (byte) (0xFF);
+
+				for (int i = 0; i < maxIterations-1; ++i) {
+					colors_rgb[i][0] = (byte) (0x0);
+					colors_rgb[i][1] = (byte) (0x0);
+					colors_rgb[i][2] = (byte) (0x0);
+
+				}
+			}
+			break;
 			case COLORMAP_EARTH: {
 			List<byte[]> controlColors = new ArrayList<byte[]>();
 			// first 7 ramps contribute total 254 exponential levels of color
-			controlColors.add(WHITE);
-			controlColors.add(DARK_BLUE);
-			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
-			controlColors.add(ORANGE);
 			controlColors.add(DARK_BLUE);
+			controlColors.add(BLUE);
 			controlColors.add(DARK_GREEN);
+			controlColors.add(GREEN);
+			controlColors.add(ORANGE);
+			controlColors.add(DARK_RED);
 
 			// following 8 ramps each contribute 256 linear levels each to color map
-			controlColors.add(WHITE);
-			controlColors.add(DARK_BLUE);
-			controlColors.add(DARK_GREEN);
 			controlColors.add(BROWN);
 			controlColors.add(ORANGE);
-			controlColors.add(DARK_BLUE);
+			controlColors.add(GREEN);
 			controlColors.add(DARK_GREEN);
+			controlColors.add(BLUE);
+			controlColors.add(DARK_BLUE);
 			controlColors.add(BROWN);
+			controlColors.add(CYAN);
 
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
@@ -187,29 +236,109 @@ public class ColorSet {
 			List<byte[]> controlColors = new ArrayList<byte[]>();
 			// first 7 ramps contribute total 254 exponential levels of color
 
+			controlColors.add(PURPLE);
 			controlColors.add(DARK_BLUE);
 			controlColors.add(BLUE);
 			controlColors.add(CYAN);
-			controlColors.add(PURPLE);
-			controlColors.add(RED);
 			controlColors.add(ORANGE);
-			controlColors.add(YELLOW);
+			controlColors.add(DARK_RED);
+			controlColors.add(RED);
 
 
 			// following 8 ramps each contribute 256 linear levels each to color map
-			controlColors.add(DARK_BLUE);
-			controlColors.add(BLUE);
-			controlColors.add(CYAN);
-			controlColors.add(PURPLE);
-			controlColors.add(RED);
-			controlColors.add(ORANGE);
 			controlColors.add(YELLOW);
-			controlColors.add(WHITE);
+			controlColors.add(RED);
+			controlColors.add(DARK_RED);
+			controlColors.add(ORANGE);
+			controlColors.add(CYAN);
+			controlColors.add(BLUE);
+			controlColors.add(DARK_BLUE);
+			controlColors.add(PURPLE);
 
 			createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
 		}
 		break;
-//		case COLORMAP_RANDOM: {
+			case COLORMAP_RAINBOW: {
+				List<byte[]> controlColors = new ArrayList<byte[]>();
+				// first 7 ramps contribute total 254 exponential levels of color
+
+				controlColors.add(RED);
+				controlColors.add(ORANGE);
+				controlColors.add(YELLOW);
+				controlColors.add(GREEN);
+				controlColors.add(BLUE);
+				controlColors.add(DARK_BLUE);
+				controlColors.add(PURPLE);
+
+
+				// following 8 ramps each contribute 256 linear levels each to color map
+				controlColors.add(RED);
+				controlColors.add(ORANGE);
+				controlColors.add(YELLOW);
+				controlColors.add(GREEN);
+				controlColors.add(BLUE);
+				controlColors.add(DARK_BLUE);
+				controlColors.add(PURPLE);
+				controlColors.add(RED);
+
+				createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+			}
+			break;
+			case COLORMAP_SNOW: {
+				List<byte[]> controlColors = new ArrayList<byte[]>();
+				// first 7 ramps contribute total 254 exponential levels of color
+
+				controlColors.add(DARK_BLUE);
+				controlColors.add(BLUE);
+				controlColors.add(CYAN);
+				controlColors.add(WHITE);
+				controlColors.add(CYAN);
+				controlColors.add(BLUE);
+				controlColors.add(DARK_BLUE);
+
+
+				// following 8 ramps each contribute 256 linear levels each to color map
+				controlColors.add(BLUE);
+				controlColors.add(CYAN);
+				controlColors.add(WHITE);
+				controlColors.add(CYAN);
+				controlColors.add(BLUE);
+				controlColors.add(DARK_BLUE);
+				controlColors.add(BLUE);
+				controlColors.add(CYAN);
+
+				createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+			}
+			break;
+
+			case COLORMAP_FIRE: {
+				List<byte[]> controlColors = new ArrayList<byte[]>();
+				// first 7 ramps contribute total 254 exponential levels of color
+
+				controlColors.add(PURPLE);
+				controlColors.add(RED);
+				controlColors.add(ORANGE);
+				controlColors.add(YELLOW);
+				controlColors.add(WHITE);
+				controlColors.add(YELLOW);
+				controlColors.add(ORANGE);
+
+
+				// following 8 ramps each contribute 256 linear levels each to color map
+				controlColors.add(RED);
+				controlColors.add(PURPLE);
+				controlColors.add(RED);
+				controlColors.add(ORANGE);
+				controlColors.add(YELLOW);
+				controlColors.add(WHITE);
+				controlColors.add(YELLOW);
+				controlColors.add(ORANGE);
+
+				createExponentialMap(controlColors, colors_rgb, maxIterations / controlColors.size());
+			}
+			break;
+
+			//		case COLORMAP_RANDOM: {
 //			List<byte[]> controlColors = new ArrayList<byte[]>();
 //
 //			int maxSpan = 256;

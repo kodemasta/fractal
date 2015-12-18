@@ -53,6 +53,13 @@
                     <span class="label label-info">Name</span>
                 </li></li>-->
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="test">
+                    <a id="about-icon" href="#"><span class="glyphicon glyphicon-info-sign"></span></a>
+                </li>
+            </ul>
+
+
         </div>
     </div>
 </nav>
@@ -83,11 +90,11 @@
                             <td>
                                 <div class="input-group ">
                                                 <span id="minus-button" class="btn btn-default input-group-addon btn-number" data-type="minus" data-field="zoomData" disabled="true">
-                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                    <span class="glyphicon glyphicon-zoom-out"></span>
                                                 </span>
                                     <input id="zoomData" style="text-align:center;" buttons=false type="number" pattern="[0-9]*" class="form-control input-number" value="0" min="0" max="99"  disabled="true">
                                                 <span id="plus-button" class="btn btn-default input-group-addon btn-number" data-type="plus" data-field="zoomData">
-                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                    <span class="glyphicon glyphicon-zoom-in"></span>
                                                 </span>
                                                 <span class = "input-group-btn">
                                                     <button id="reset-button2" class = "btn btn-default" type = "button">Reset</button>
@@ -113,7 +120,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-2 col-md-2 col-lg-2 ">
+            <div class="col-sm-3 col-md-3 col-lg-3 ">
                 <div class="form-group">
                     <p class="text-info">Size (pixels)</p>
                     <table width="100%">
@@ -122,7 +129,7 @@
                             <td>
                                 <select class="form-control" name="size-select" id="size-select">
                                     <option value="512">512 x 512</option>
-                                    <option value="1024">1024 x 1024</option>
+                                    <option value="1024">1024 x 1024 (slower)</option>
                                 </select>
                             </td>
                         </tr>
@@ -139,15 +146,16 @@
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="panel panel-default" id="julia-picker">
                     <div class="panel-heading">
-                        Julia Set Picker - Click near fractal edge for different sets
+                        Julia Selector (left) and Preview (right) - Click near fractal edge for different sets
                         <div style="float: right;" id="julia-fractal-loading" class="label label-success">Computing</div>
                     </div>
                     <div class="panel-body">
                         <center>
-                            <div><img alt="" class="img-thumbnail" width="256" height="256" id="julia-picker-image" src="" style="cursor:crosshair" >
-                                <img alt="" class="img-thumbnail" width="256" height="256" id="julia-preview-image" src=""  ></div>
+                        <img alt="" class="img-thumbnail" width="256" height="256" id="julia-picker-image" src="" style="cursor:crosshair" >
+                        <img alt="" class="img-thumbnail" width="256" height="256" id="julia-preview-image" src=""  >
                         </center>
                     </div>
+
                 </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
@@ -178,13 +186,34 @@
                 </div>
 
             </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12"><p></p></div>
+            </div>
             <!-- Start of SimpleHitCounter Code -->
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    <a href="http://www.simplehitcounter.com" target="_blank">
-                        <img alt="web counter" border="0" height="18" src="http://simplehitcounter.com/hit.php?uid=1986385&f=0&b=16777215" width="83"></a>
-                    <a href="http://www.simplehitcounter.com" style="text-decoration:none;" target="_blank">visits</a>
+                    <img alt="web counter" border="0" height="18" src="http://simplehitcounter.com/hit.php?uid=1986385&f=0&b=16777215" width="83">
+                    visits
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- set up the modal to start hidden and fade in and out -->
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- dialog body -->
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                Fractal Scope<br>
+                Version: BETA<br>
+                Author: Bob Sheehan
+            </div>
+            <!-- dialog buttons -->
+            <div class="modal-footer">
+                <button type="button" id="ok-button" class="btn btn-primary">OK</button>
             </div>
         </div>
     </div>

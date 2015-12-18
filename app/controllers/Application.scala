@@ -32,12 +32,17 @@ object Application extends Controller {
   colorSetMap.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
   colorSetMap.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
   colorSetMap.put(ColorSetType.COLORMAP_BLACK, new ColorSet(2048, ColorSetType.COLORMAP_BLACK))
+  colorSetMap.put(ColorSetType.COLORMAP_WHITE, new ColorSet(2048, ColorSetType.COLORMAP_WHITE))
+  colorSetMap.put(ColorSetType.COLORMAP_RAINBOW, new ColorSet(2048, ColorSetType.COLORMAP_RAINBOW))
+  colorSetMap.put(ColorSetType.COLORMAP_FIRE, new ColorSet(2048, ColorSetType.COLORMAP_FIRE))
+  colorSetMap.put(ColorSetType.COLORMAP_SNOW, new ColorSet(2048, ColorSetType.COLORMAP_SNOW))
+  colorSetMap.put(ColorSetType.COLORMAP_GRAY2, new ColorSet(2048, ColorSetType.COLORMAP_GRAY2))
 
 
   val fractalService = FractalService
 
   def index = Action {
-    Ok(views.html.index("Fractalator"))
+    Ok(views.html.index("Fractal Scope"))
   }
 
   // JSON converter for Rectangle2D.Float

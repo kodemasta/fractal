@@ -223,7 +223,7 @@ $(document).ready(function() {
             async: false,
             data: JSON.stringify({
                 "id": selectedFractal.parentId,
-                "colorId": "4",
+                "colorId": "6",
                 "region": region,
                 "size": {
                     "w": width,
@@ -462,38 +462,44 @@ $(document).ready(function() {
     }
 
     function zoomButtonClicked(button) {
-            fieldName = button.attr('data-field');
-            type = button.attr('data-type');
-            var input = $('#' + fieldName);
-            var currentVal = parseInt(input.val(), 10);
-            console.log('zoom clicked ' + currentVal);
-            if (!isNaN(currentVal)) {
-                if (type == 'minus') {
-                    if (currentVal > input.attr('min')) {
-                        input.val(currentVal - 1).change();
-                        zoomOut();
-                        return true;
-                    }
-                    if (currentVal == input.attr('min')) {
-                        $(this).attr('disabled', true);
-                        console.log('minus clicked == min');
-                    }
-                } else if (type == 'plus') {
-                    if (currentVal < input.attr('max')) {
-                        input.val(currentVal + 1).change();
-                        zoomIn();
-                        return true;
-                    }
-                    if (currentVal == input.attr('max')) {
-                        $(this).attr('disabled', true);
-                        console.log('plus clicked == max');
-                    }
+        fieldName = button.attr('data-field');
+        type = button.attr('data-type');
+        var input = $('#' + fieldName);
+        var currentVal = parseInt(input.val(), 10);
+        console.log('zoom clicked ' + currentVal);
+        if (!isNaN(currentVal)) {
+            if (type == 'minus') {
+                if (currentVal > input.attr('min')) {
+                    input.val(currentVal - 1).change();
+                    zoomOut();
+                    return true;
                 }
-            } else {
-                input.val(0);
+                if (currentVal == input.attr('min')) {
+                    $(this).attr('disabled', true);
+                    console.log('minus clicked == min');
+                }
+            } else if (type == 'plus') {
+                if (currentVal < input.attr('max')) {
+                    input.val(currentVal + 1).change();
+                    zoomIn();
+                    return true;
+                }
+                if (currentVal == input.attr('max')) {
+                    $(this).attr('disabled', true);
+                    console.log('plus clicked == max');
+                }
             }
-            return false;
+        } else {
+            input.val(0);
         }
+        return false;
+    }
+
+    $('#about-icon').click(function(e){
+       console.log('about-icon clicked');
+        $("#myModal").modal('show');
+    });
+
         // ---------------------------
         // manage counters on bulk tab
     $('.btn-number').click(function(e) {
@@ -535,5 +541,25 @@ $(document).ready(function() {
             $(".btn-number[data-type='plus'][data-field='" + name + "']").addAttr('disabled');
             $(this).val($(this).data('oldValue'));
         }
+    });
+
+
+    $("#ok-button").on("click", function(e) {
+        console.log("button pressed"); // just as an example...
+        $("#myModal").modal('hide'); // dismiss the dialog
+     });
+
+
+    $("#myModal").on("hide", function() { // remove the event listeners when the dialog is dismissed
+        $("#myModal a.btn").off("click");
+    });
+    $("#myModal").on("hidden", function() { // remove the actual elements from the DOM when fully hidden
+        $("#myModal").remove();
+    });
+
+    $("#myModal").modal({ // wire up the actual modal functionality and show the dialog
+        "backdrop" : "static",
+        "keyboard" : true,
+        "show" : false // ensure the modal is shown immediately
     });
 });
