@@ -189,7 +189,7 @@ $(document).ready(function() {
             data: JSON.stringify({
                 "id": selectedFractal.id,
                 "colorId": selectedColor.id,
-                "region": fractalRegion,
+                "region": JSON.parse(getFractal(selectedFractal.id).region),
                 "size": {
                     "w": width,
                     "h": height
