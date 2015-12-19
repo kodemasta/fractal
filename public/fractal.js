@@ -18,22 +18,11 @@ $(document).ready(function() {
         getFractals();
         getColors();
         for (var i = 0; i < fractalData.fractals.length; i++) {
-            /* console.log("fractal-change-menu append " + fractalData.fractals[i].id + " " + fractalData.fractals[i].name);
-                 $('#fractal-change-menu').append('<li value="' + fractalData.fractals[i].id  + '"><a href="#">' + fractalData.fractals[i].name + '</a></li>');
-                */
             console.log("fractal-select append " + fractalData.fractals[i].id + " " + fractalData.fractals[i].name);
             var option = '<option value="' + fractalData.fractals[i].id + '" id="fractal-select' + fractalData.fractals[i].id + '">' + fractalData.fractals[i].name + '</option>';
             $("#fractal-select").append(option);
-            //var id = "fractal-select" + fractalData.fractals[i].id;
-            //$("#" + id).on("click", clickFractalType);
         }
         for (var i = 0; i < colorData.colors.length; i++) {
-            /*
-               var button='<button type="button" class="btn btn-default" value="' + colorData.colors[i].id + '" id="color-button'+colorData.colors[i].id +'">' + colorData.colors[i].name + '</button>';
-               $("#color-buttons").append(button)
-               var id = "color-button"+colorData.colors[i].id;
-               $("#"+id).on("click", clickColor);
-               */
             console.log("color-select append " + colorData.colors[i].id + " " + colorData.colors[i].name);
             var option = '<option value="' + colorData.colors[i].id + '" id="color-select' + colorData.colors[i].id + '">' + colorData.colors[i].name + '</option>';
             $("#color-select").append(option);
@@ -56,7 +45,7 @@ $(document).ready(function() {
         var colorOption = document.getElementById('color-select');
         $(colorOption).val(2);
         $(colorOption).change();
-        resetzoomButtonClicked();
+        resetZoomButtonClicked();
         $('#fractal-loading').toggle();
         $('#julia-picker').hide();
         renderFractal(0, 0);
@@ -64,38 +53,64 @@ $(document).ready(function() {
 
     function toggleCompute(toggle) {
         var img = document.getElementById('fractal-image');
+        var pickerImage = document.getElementById('julia-picker-image');
         if (toggle) {
             computing = true;
             jQuery('#fractal-loading').show();
             $(img).attr("style", 'border: 2px solid #00AA00;');
-        } else {
+            $(img).prop("disabled", true);
+            $(pickerImage).attr("style", '');
+            $(pickerImage).prop("disabled", true);
+            $("#size-select").prop("disabled", true);
+            $("#fractal-select").prop("disabled", true);
+            $("#color-select").prop("disabled", true);
+            $('.input-number').prop("disabled", true);
+            $("#reset-button2").prop("disabled", true);
+      } else {
             computing = false;
             jQuery('#fractal-loading').hide();
             $(img).attr("style", 'cursor:crosshair;');
-        }
+            $(img).prop("disabled", false);
+            $(pickerImage).attr("style", 'cursor:crosshair;');
+            $(pickerImage).prop("disabled", false);
+            $("#size-select").prop("disabled", false);
+            $("#color-select").prop("disabled", false);
+            $("#fractal-select").prop("disabled", false);
+            $('.input-number').prop("disabled", false);
+            $("#reset-button2").prop("disabled", false);
+       }
     }
 
     function toggleJuliaPreviewCompute(toggle) {
-        var img = document.getElementById('fractal-image');
-        var img2 = document.getElementById('julia-preview-image');
-        var img3 = document.getElementById('julia-picker-image');
+        var fractalImage = document.getElementById('fractal-image');
+        var previewImage = document.getElementById('julia-preview-image');
+        var pickerImage = document.getElementById('julia-picker-image');
         if (toggle) {
             computingJulia = true;
             jQuery('#julia-fractal-loading').show();
-            $(img).attr("style", 'border: 2px solid #00AA00;');
-            $(img2).attr("style", 'border: 2px solid #00AA00;');
-            $(img3).attr("style", 'border: 2px solid #00AA00;');
-        } else {
+            $(fractalImage).attr("style", 'border: 2px solid #00AA00;');
+            $(previewImage).attr("style", 'border: 2px solid #00AA00;');
+            $(pickerImage).attr("style", 'border: 2px solid #00AA00;');
+
+            $(fractalImage).prop("disabled", true);
+            $(previewImage).prop("disabled", true);
+            $(pickerImage).prop("disabled", true);
+       } else {
             computingJulia = false;
             jQuery('#julia-fractal-loading').hide();
-            $(img).attr("style", 'cursor:crosshair;');
-            $(img2).attr("style", '');
-            $(img3).attr("style", 'cursor:crosshair');
+            $(fractalImage).attr("style", 'cursor:crosshair;');
+            $(previewImage).attr("style", '');
+            $(pickerImage).attr("style", 'cursor:crosshair');
+
+            $(fractalImage).prop("disabled", false);
+            $(previewImage).prop("disabled", false);
+            $(pickerImage).prop("disabled", false);
         }
     }
 
     function renderFractal(offsetX, offsetY) {
-        if (computing) return;
+        if (computing)
+            return;
         toggleCompute(true)
         console.log("renderFractal offset " + offsetX + " " + offsetY);
         var img = document.getElementById('fractal-image');
@@ -144,8 +159,8 @@ $(document).ready(function() {
             dataType: "text",
             success: function(data) {
                 console.log("POST fractal success");
-                $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data);
-                toggleCompute(false);
+                 toggleCompute(false);
+               $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("error " + textStatus + " " + errorThrown);
@@ -188,8 +203,8 @@ $(document).ready(function() {
             dataType: "text",
             success: function(data) {
                 console.log("POST fractal success");
-                $("#julia-preview-image").attr("src", 'data:image/jpg;base64,' + data);
                 toggleJuliaPreviewCompute(false);
+                $("#julia-preview-image").attr("src", 'data:image/jpg;base64,' + data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("error " + textStatus + " " + errorThrown);
@@ -328,7 +343,7 @@ $(document).ready(function() {
     });
     $('#reset-button2').click(function() {
         reset()
-        resetzoomButtonClicked();
+        resetZoomButtonClicked();
         renderFractal(0, 0);
     });
 
@@ -375,13 +390,15 @@ $(document).ready(function() {
     }
 
     function clickSize(size) {
-            console.log("clickSize " + size);
-            if (selectedSize == size) return;
-            selectedSize = size;
-            $("#fractal-image").attr("WIDTH", selectedSize);
-            $("#fractal-image").attr("HEIGHT", selectedSize);
-            zoomMode = 0;
-            renderFractal(0, 0);
+        if (computing || computingJulia)
+            return;
+        console.log("clickSize " + size);
+        if (selectedSize == size) return;
+        selectedSize = size;
+        $("#fractal-image").attr("WIDTH", selectedSize);
+        $("#fractal-image").attr("HEIGHT", selectedSize);
+        zoomMode = 0;
+        renderFractal(0, 0);
         }
         /*   $('#fractal-change-menu li').click(function(e) {
           console.log("fractal-change-menu " + $(this).attr("value"));
@@ -389,7 +406,7 @@ $(document).ready(function() {
           setFractal($(this).attr("value"));
           cX = -0.8;
           cY = -0.2249;
-          resetzoomButtonClicked();
+          resetZoomButtonClicked();
           renderFractal(0,0);
           renderJuliaNavFractal(0,0);
      });*/
@@ -403,7 +420,7 @@ $(document).ready(function() {
         setFractal(type);
         cX = -0.8;
         cY = -0.2249;
-        resetzoomButtonClicked();
+        resetZoomButtonClicked();
         renderFractal(0, 0);
         renderJuliaPreviewFractal();
         renderJuliaNavFractal(0, 0);
@@ -416,31 +433,42 @@ $(document).ready(function() {
         setFractal(type);
         cX = -0.8;
         cY = -0.2249;
-        resetzoomButtonClicked();
+        resetZoomButtonClicked();
         renderFractal(0, 0);
         renderJuliaPreviewFractal();
         renderJuliaNavFractal(0, 0);
     }
+
     $("#size-select").click(function(e) {
         console.log("size-select " + $(this).attr("value"));
     });
+
     $('#julia-picker-image').click(function(e) {
+        if (computing || computingJulia)
+            return;
         var img = document.getElementById('julia-picker-image');
         var offsetX = e.pageX - e.target.offsetLeft - e.target.offsetParent.offsetLeft - img.naturalWidth / 2;
         var offsetY = e.pageY - e.target.offsetTop - e.target.offsetParent.offsetTop - img.naturalHeight / 2;
         var percentOffsetX = offsetX / img.naturalWidth;
         var percentOffsetY = offsetY / img.naturalHeight;
-        var region = JSON.parse(fractalData.fractals[0].region)
+        var region = JSON.parse(getFractal(selectedFractal.parentId).region)
+        region.x += .25
+        region.w -= .5
+        region.y += .25
+        region.h -= .5
         var x = region.x + region.w / 2 + region.w * percentOffsetX
         var y = -(region.y + region.h / 2 + region.h * percentOffsetY)
-        console.log("click julia-picker-image" + x + " " + y);
+        console.log("click julia-picker-image " + x + " " + y);
         reset();
         cX = x;
         cY = y;
         renderJuliaPreviewFractal();
         renderFractal(0, 0);
     });
+
     $('#fractal-image').click(function(e) {
+       if (computing || computingJulia)
+            return;
         var img = document.getElementById('fractal-image');
         var offsetX = e.pageX - e.target.offsetLeft - e.target.offsetParent.offsetLeft - selectedSize / 2;
         var offsetY = e.pageY - e.target.offsetTop - e.target.offsetParent.offsetTop - selectedSize / 2;
@@ -453,7 +481,9 @@ $(document).ready(function() {
         renderFractal(offsetX, offsetY);
     });
 
-    function resetzoomButtonClicked() {
+    function resetZoomButtonClicked() {
+        if (computing || computingJulia)
+            return;
         var buttonPlus = document.getElementById('plus-button');
         fieldName = $(buttonPlus).attr('data-field');
         type = $(buttonPlus).attr('data-type');
@@ -462,7 +492,9 @@ $(document).ready(function() {
     }
 
     function zoomButtonClicked(button) {
-        fieldName = button.attr('data-field');
+        if (computing || computingJulia)
+         return;
+       fieldName = button.attr('data-field');
         type = button.attr('data-type');
         var input = $('#' + fieldName);
         var currentVal = parseInt(input.val(), 10);
@@ -522,6 +554,8 @@ $(document).ready(function() {
     });
     // handle min/max values on inputs
     $('.input-number').change(function() {
+        if (computing || computingJulia)
+            return;
         console.log('input-number clicked');
         minValue = parseInt($(this).attr('min'), 10);
         maxValue = parseInt($(this).attr('max'), 10);
