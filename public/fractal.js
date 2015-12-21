@@ -57,9 +57,9 @@ $(document).ready(function() {
         if (toggle) {
             computing = true;
             jQuery('#fractal-loading').show();
-            $(img).attr("style", 'border: 2px solid #00AA00;');
+            $(img).attr("style", 'border: 2px solid #00AA00;cursor:wait;');
             $(img).prop("disabled", true);
-            $(pickerImage).attr("style", '');
+            $(pickerImage).attr("style", 'cursor:wait;');
             $(pickerImage).prop("disabled", true);
             $("#size-select").prop("disabled", true);
             $("#fractal-select").prop("disabled", true);

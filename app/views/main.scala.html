@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
     <link rel="icon" href="@routes.Assets.at("images/favicon.ico")">
 
+
 </head>
 <body>
 <meta charset="utf-8">
@@ -33,7 +34,11 @@
              js.src = "//connect.facebook.net/en_US/sdk.js";
              fjs.parentNode.insertBefore(js, fjs);
            }(document, 'script', 'facebook-jssdk'));
+
+
         </script>
+
+
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -184,11 +189,15 @@
                          data-layout="button_count" data-share="true" data-show-faces="true">
                     </div>
                 </div>
-
             </div>
+            <p></p>
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12"><p></p></div>
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
+                    <script type="IN/Share" data-url="http://fractalscope.herokuapp.com" data-counter="right"></script>
+                </div>
             </div>
+
             <!-- Start of SimpleHitCounter Code -->
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
@@ -209,8 +218,13 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 Fractal Scope<br>
                 Version: BETA<br>
-                Author: Bob Sheehan
+                Author: Bob Sheehan<br><br>
+                <!-- Start of FB Code -->
+                <div class=" fb-like" data-action="like" data-href="http://fractalscope.herokuapp.com"
+                     data-layout="button_count" data-share="true" data-show-faces="true">
+                </div>
             </div>
+
             <!-- dialog buttons -->
             <div class="modal-footer">
                 <button type="button" id="ok-button" class="btn btn-primary">OK</button>
