@@ -132,9 +132,6 @@ object Application extends Controller {
       val id: JsValue = json \ "id"
 
       val colorSetId: ColorSetType = ColorSetType.values()(colorId.as[String].toInt)
-      if (colorSetId== null)
-        BadRequest("color id not supported " + colorId.as[String])
-
       val fractalId: FractalType = FractalType.values()(id.as[String].toInt)
 
       val rect = new Rectangle2D.Double((region \ "x").as[Double],
