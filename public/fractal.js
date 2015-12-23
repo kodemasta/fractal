@@ -144,7 +144,7 @@ $(document).ready(function() {
             async: true,
             data: JSON.stringify({
                 "id": selectedFractal.id,
-                "colorId": 999,//selectedColor.id,
+                "colorId":selectedColor.id,
                 "region": fractalRegion,
                 "size": {
                     "w": width,
