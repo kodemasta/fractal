@@ -93,31 +93,6 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-3 col-md-3 col-lg-3 ">
-                <div class="form-group">
-                    <p class="text-info">Zoom Level</p>
-                    <table width="100%">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div class="input-group ">
-                                                <span id="minus-button" class="btn btn-default input-group-addon btn-number" data-type="minus" data-field="zoomData" disabled="true">
-                                                    <span class="glyphicon glyphicon-zoom-out"></span>
-                                                </span>
-                                    <input id="zoomData" style="text-align:center;" buttons=false type="number" pattern="[0-9]*" class="form-control input-number" value="0" min="0" max="99"  disabled="true">
-                                                <span id="plus-button" class="btn btn-default input-group-addon btn-number" data-type="plus" data-field="zoomData">
-                                                    <span class="glyphicon glyphicon-zoom-in"></span>
-                                                </span>
-                                                <span class = "input-group-btn">
-                                                    <button id="reset-button2" class = "btn btn-default" type = "button">Reset</button>
-                                                </span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
             <div class="col-sm-2 col-md-2 col-lg-2 ">
                 <div class="form-group">
                     <p class="text-info">Colors</p>
@@ -132,7 +107,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-3 col-md-3 col-lg-3 ">
+            <!--<div class="col-sm-3 col-md-3 col-lg-3 ">
                 <div class="form-group">
                     <p class="text-info">Size (pixels)</p>
                     <table width="100%">
@@ -148,7 +123,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 
@@ -158,7 +133,7 @@
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="panel panel-default" id="julia-picker">
                     <div class="panel-heading">
-                        Julia Selector (left) and Preview (right) - Click near fractal edge for different sets
+                        Julia Selector (left) and Preview (right) - Tap near fractal edge for different sets
                         <div style="float: right;" id="julia-fractal-loading" class="label label-success">Computing</div>
                     </div>
                     <div class="panel-body">
@@ -167,15 +142,46 @@
                         <img alt="" class="img-thumbnail" width="256" height="256" id="julia-preview-image" src=""  >
                         </center>
                     </div>
-
                 </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="panel panel-default" id="fractal-panel">
                     <div class="panel-heading">
-                        Fractal Viewer - Click to Zoom
-                        <div style="float: right;" id="fractal-loading" class="label label-success">Computing</div>
-                    </div>
+                        <div class="form-group">
+                            <table >
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <p class="text-info">Zoom Level - tap image to zoom</p>
+                                        <div class="input-group">
+                                            <span id="minus-button" class="btn btn-default input-group-addon btn-number" data-type="minus" data-field="zoomData" disabled="true">
+                                                <span class="glyphicon glyphicon-zoom-out"></span>
+                                            </span>
+                                            <input id="zoomData" style="text-align:center;" buttons=false type="number" pattern="[0-9]*" class="form-control input-number" value="0" min="0" max="99"  disabled="true" readonly>
+                                            <span id="plus-button" class="btn btn-default input-group-addon btn-number" data-type="plus" data-field="zoomData">
+                                                <span class="glyphicon glyphicon-zoom-in"></span>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button id="reset-button2" class = "btn btn-default" type = "button">Reset</button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="padding : 10px 10px 10px 10px;"> </td>
+                                    <td>
+                                        <p class="text-info">Size</p>
+                                        <select class="form-control" name="size-select" id="size-select">
+                                            <option value="512">512 x 512</option>
+                                            <option value="1024">1024 x 1024 (slower)</option>
+                                        </select>
+                                    </td>
+
+                                </tr                                  <tr>
+                                    <div style="float: right;" id="fractal-loading" class="label label-success">Computing</div>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                     </div>
                     <div class="panel-body">
                         <center>
                             <div><img alt="" class="img-circle"  width="512" height="512" id="fractal-image" src="" style="cursor:crosshair"></div>
