@@ -79,9 +79,9 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-sm-3 col-md-3 col-lg-3 ">
+            <div class="col-sm-4 col-md-4 col-lg-4 ">
                 <div class="form-group">
-                    <p class="text-info">Fractals</p>
+                    <p class="text-info">Fractal</p>
                     <table width="100%">
                         <tbody>
                         <tr>
@@ -93,37 +93,37 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-2 col-md-2 col-lg-2 ">
-                <div class="form-group">
-                    <p class="text-info">Colors</p>
-                    <table width="100%">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <select class="form-control" name="color-select" id="color-select"></select>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!--<div class="col-sm-3 col-md-3 col-lg-3 ">
-                <div class="form-group">
-                    <p class="text-info">Size (pixels)</p>
-                    <table width="100%">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <select class="form-control" name="size-select" id="size-select">
-                                    <option value="512">512 x 512</option>
-                                    <option value="1024">1024 x 1024 (slower)</option>
-                                </select>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>-->
+            <!-- <div class="col-sm-2 col-md-2 col-lg-2 ">
+                 <div class="form-group">
+                     <p class="text-info">Colors</p>
+                     <table width="100%">
+                         <tbody>
+                         <tr>
+                             <td>
+                                 <select class="form-control" name="color-select" id="color-select"></select>
+                             </td>
+                         </tr>
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+             <div class="col-sm-3 col-md-3 col-lg-3 ">
+                 <div class="form-group">
+                     <p class="text-info">Size (pixels)</p>
+                     <table width="100%">
+                         <tbody>
+                         <tr>
+                             <td>
+                                 <select class="form-control" name="size-select" id="size-select">
+                                     <option value="512">512 x 512</option>
+                                     <option value="1024">1024 x 1024 (slower)</option>
+                                 </select>
+                             </td>
+                         </tr>
+                         </tbody>
+                     </table>
+                 </div>
+             </div>-->
         </div>
     </div>
 
@@ -174,8 +174,13 @@
                                             <option value="1024">1024 x 1024 (slower)</option>
                                         </select>
                                     </td>
-
-                                </tr                                  <tr>
+                                    <td style="padding : 10px 10px 10px 10px;"> </td>
+                                    <td>
+                                        <p class="text-info">Color</p>
+                                        <select class="form-control" name="color-select" id="color-select"></select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <div style="float: right;" id="fractal-loading" class="label label-success">Computing</div>
                                 </tr>
                                 </tbody>
