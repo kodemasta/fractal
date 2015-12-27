@@ -21,8 +21,8 @@ public class FractalFactory {
 		fractals.add(new MandelbrotQuarticJuliaFunction().fractalInfo);
 		fractals.add(new MandelbrotQuarticFunction().fractalInfo);
 		fractals.add(new MandelbrotCubicJuliaFunction().fractalInfo);
-		fractals.add(new MandelbrotJuliaFunction().fractalInfo);
 		fractals.add(new MandelbrotCubicFunction().fractalInfo);
+		fractals.add(new MandelbrotJuliaFunction().fractalInfo);
 		fractals.add(new MandelbrotFunction().fractalInfo);
 		return fractals;
 	}

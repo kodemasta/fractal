@@ -30,21 +30,36 @@ public class MandelbrotFunction extends AbstractFractalFunction {
 	 * This iterates over the constant of z = z^2 + constant
 	 */
 	public short iterate(Complex z, Complex c) {
+		short minIteration = 2048;
 		Complex z2 = new Complex(z);
 		if (isPointInCardioidBulbs(c))
 			return (short) (fractalInfo.config.maxIterations - 1);
 		//if (c.magnitude() > fractalInfo.config.escapeRadius)
 		//	return 0;
 
+		double distance = Double.MAX_VALUE;
 		// if recursive calls do not create escaping orbit, then return the max
 		// iteration allowed.
 		for (short i = 0; i < fractalInfo.config.maxIterations; ++i) {
 			z2.squaredAdd(c);
-			//z2.add(c);
+
+			//Set new distance dist = min( dist, |z-point| )
+			/*Complex zMinusPoint = new Complex(z2);
+			zMinusPoint = zMinusPoint.subtract(new Complex(0,c.i));
+
+			double zMinusPointModulus = zMinusPoint.magnitude2();
+			if(zMinusPointModulus < distance) {
+				distance = zMinusPointModulus;
+				minIteration = i;
+			}*/
+
+
 			//currZ.squaredAbs();// burning ship
 			if (z2.mag > fractalInfo.config.escapeRadius)
+				//return minIteration;
 				return i;
 		}
-		return (short) (fractalInfo.config.maxIterations - 1);
+		return
+				(short) (fractalInfo.config.maxIterations - 1);
 	}
 }

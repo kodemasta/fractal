@@ -69,6 +69,14 @@ public class Complex {
 		return mag;
 	}
 
+	/** Return the magnitude of a complex number */
+	public double magnitude2() {
+		double squaredR = this.r*this.r;
+		double squaredI = this.i*this.i;
+		mag = squaredR + squaredI;
+		return mag;
+	}
+
 	/** Add another Complex to this one
 	 */
 	public Complex add(Complex other) {
