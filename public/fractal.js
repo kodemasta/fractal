@@ -1,9 +1,12 @@
 $(document).ready(function() {
     var selectedFractal;
     var selectedColor;
+    var selectedEquation;
     var fractalData;
-    var fractalRegion;
+    var currentFractalRegion = null;
+    var previewFractalRegion = null;
     var colorData;
+    var equationData;
     var zoomMode = 0;
     var zoomLevel = 0;
     var cX = 0.0;
@@ -15,6 +18,7 @@ $(document).ready(function() {
     init();
 
     function init() {
+        getEquations();
         getFractals();
         getColors();
         for (var i = 0; i < fractalData.fractals.length; i++) {
@@ -26,6 +30,11 @@ $(document).ready(function() {
             console.log("color-select append " + colorData.colors[i].id + " " + colorData.colors[i].name);
             var option = '<option value="' + colorData.colors[i].id + '" id="color-select' + colorData.colors[i].id + '">' + colorData.colors[i].name + '</option>';
             $("#color-select").append(option);
+        }
+        for (var i = 0; i < equationData.equations.length; i++) {
+            console.log("equation-select append " + equationData.equations[i].id + " " + equationData.equations[i].name);
+            var option = '<option value="' + equationData.equations[i].id + '" id="equation-select' + equationData.equations[i].id + '">' + equationData.equations[i].name + '</option>';
+            $("#equation-select").append(option);
         }
 
         $("select#color-select").change(function(){
@@ -40,6 +49,11 @@ $(document).ready(function() {
            clickFractalType($(this).children(":selected").val())
         });
 
+        $("select#equation-select").change(function(){
+           clickEquationType($(this).children(":selected").val())
+        });
+
+        setEquation(1)
         setFractal(1)
         setColor(2)
         var colorOption = document.getElementById('color-select');
@@ -119,25 +133,28 @@ $(document).ready(function() {
         var percentOffsetX = offsetX / width;
         var percentOffsetY = offsetY / height;
         console.log("create % offset " + percentOffsetX + " " + percentOffsetY);
-        //console.log("create fractal region " + fractalRegion.w + " " + fractalRegion.h);
-        var fractalOffsetX = fractalRegion.w * percentOffsetX;
-        var fractalOffsetY = fractalRegion.h * percentOffsetY;
-        console.log("create fractal offset " + fractalOffsetX + " " + fractalOffsetY);
-        fractalRegion.x += fractalOffsetX
-        fractalRegion.y += fractalOffsetY
-        if (zoomMode > 0) {
-            fractalRegion.w /= 2
-            fractalRegion.h /= 2
-            fractalRegion.x += fractalRegion.w / 2
-            fractalRegion.y += fractalRegion.h / 2
-        } else if (zoomMode < 0) {
-            fractalRegion.x -= fractalRegion.w / 2
-            fractalRegion.y -= fractalRegion.h / 2
-            fractalRegion.w *= 2
-            fractalRegion.h *= 2
+        if (currentFractalRegion != null)
+        {
+            //console.log("create fractal region " + currentFractalRegion.w + " " + currentFractalRegion.h);
+            var fractalOffsetX = currentFractalRegion.w * percentOffsetX;
+            var fractalOffsetY = currentFractalRegion.h * percentOffsetY;
+            console.log("create fractal offset " + fractalOffsetX + " " + fractalOffsetY);
+            currentFractalRegion.x += fractalOffsetX
+            currentFractalRegion.y += fractalOffsetY
+            if (zoomMode > 0) {
+                currentFractalRegion.w /= 2
+                currentFractalRegion.h /= 2
+                currentFractalRegion.x += currentFractalRegion.w / 2
+                currentFractalRegion.y += currentFractalRegion.h / 2
+            } else if (zoomMode < 0) {
+                currentFractalRegion.x -= currentFractalRegion.w / 2
+                currentFractalRegion.y -= currentFractalRegion.h / 2
+                currentFractalRegion.w *= 2
+                currentFractalRegion.h *= 2
+            }
+            console.log("create updated region " + JSON.stringify(currentFractalRegion));
+            console.log("scaled region " + currentFractalRegion.x + " " + currentFractalRegion.y + " to " + (currentFractalRegion.x + currentFractalRegion.w) + " " + (currentFractalRegion.y + currentFractalRegion.h));
         }
-        console.log("create updated region " + JSON.stringify(fractalRegion));
-        console.log("scaled region " + fractalRegion.x + " " + fractalRegion.y + " to " + (fractalRegion.x + fractalRegion.w) + " " + (fractalRegion.y + fractalRegion.h));
         $.ajax({
             type: "POST",
             url: "fractal",
@@ -145,7 +162,8 @@ $(document).ready(function() {
             data: JSON.stringify({
                 "id": selectedFractal.id,
                 "colorId":selectedColor.id,
-                "region": fractalRegion,
+                "region": currentFractalRegion,
+                "equationId": selectedEquation.id,
                 "size": {
                     "w": width,
                     "h": height
@@ -158,9 +176,13 @@ $(document).ready(function() {
             contentType: 'application/json',
             dataType: "text",
             success: function(data) {
+
                 console.log("POST fractal success");
-                 toggleCompute(false);
-               $("#fractal-image").attr("src", 'data:image/jpg;base64,' + data);
+                toggleCompute(false);
+               $("#fractal-image").attr("src", 'data:image/jpg;base64,' + JSON.parse(data).image);
+               if (currentFractalRegion == null) {
+                 currentFractalRegion = JSON.parse(JSON.parse(data).region)
+               }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("error " + textStatus + " " + errorThrown);
@@ -172,7 +194,7 @@ $(document).ready(function() {
 
     function renderJuliaPreviewFractal() {
         if (computingJulia) return;
-        if (selectedFractal.parentId == 0) {
+        if (selectedFractal.id != 2) {
             return;
         }
         toggleJuliaPreviewCompute(true)
@@ -188,8 +210,9 @@ $(document).ready(function() {
             async: true,
             data: JSON.stringify({
                 "id": selectedFractal.id,
+                "equationId": selectedEquation.id,
                 "colorId": selectedColor.id,
-                "region": JSON.parse(getFractal(selectedFractal.id).region),
+                "region": currentFractalRegion, //JSON.parse(getFractal(selectedFractal.id).region),
                 "size": {
                     "w": width,
                     "h": height
@@ -204,7 +227,7 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("POST fractal success");
                 toggleJuliaPreviewCompute(false);
-                $("#julia-preview-image").attr("src", 'data:image/jpg;base64,' + data);
+                $("#julia-preview-image").attr("src", 'data:image/jpg;base64,' + JSON.parse(data).image);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("error " + textStatus + " " + errorThrown);
@@ -215,8 +238,8 @@ $(document).ready(function() {
     }
 
     function renderJuliaNavFractal(offsetX, offsetY) {
-        console.log("renderJuliaNavFractal " + selectedFractal.parentId)
-        if (selectedFractal.parentId == 0) {
+        console.log("renderJuliaNavFractal " + selectedFractal.id)
+        if (selectedFractal.id !=2) {
             $('#julia-picker').hide();
             return;
         }
@@ -227,19 +250,20 @@ $(document).ready(function() {
         if (width == 0) width = 256;
         var height = img.naturalHeight;
         if (height == 0) height = 256;
-        var region = JSON.parse(getFractal(selectedFractal.parentId).region);
-        region.x += .25
-        region.w -= .5
-        region.y += .25
-        region.h -= .5
+//        var region = JSON.parse(getFractal(selectedFractal.id).region);
+//        region.x += .25
+//        region.w -= .5
+//        region.y += .25
+//        region.h -= .5
         $.ajax({
             type: "POST",
             url: "fractal",
             async: false,
             data: JSON.stringify({
-                "id": selectedFractal.parentId,
+                "id": "1",
+                "equationId": selectedEquation.id,
                 "colorId": "6",
-                "region": region,
+                "region": null,
                 "size": {
                     "w": width,
                     "h": height
@@ -253,7 +277,8 @@ $(document).ready(function() {
             dataType: "text",
             success: function(data) {
                 console.log("POST fractal success");
-                $("#julia-picker-image").attr("src", 'data:image/jpg;base64,' + data)
+                $("#julia-picker-image").attr("src", 'data:image/jpg;base64,' + JSON.parse(data).image)
+                previewFractalRegion = JSON.parse(JSON.parse(data).region);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("error " + textStatus + " " + errorThrown);
@@ -267,7 +292,16 @@ $(document).ready(function() {
             if (fractalData.fractals[i].id == fractalId) {
                 $('#fractal-name').html('<a href="#"><span class="label label-primary">' + fractalData.fractals[i].name + '</span></a>')
                 selectedFractal = fractalData.fractals[i]
-                fractalRegion = JSON.parse(fractalData.fractals[i].region);
+
+                currentFractalRegion = null;
+            }
+        }
+    }
+
+    function setEquation(equationId) {
+        for (var i = 0; i < equationData.equations.length; i++) {
+            if (equationData.equations[i].id == equationId) {
+                selectedEquation = equationData.equations[i];
             }
         }
     }
@@ -314,6 +348,23 @@ $(document).ready(function() {
         });
     }
 
+    function getEquations() {
+        $.ajax({
+            type: "GET",
+            url: "equations",
+            async: false,
+            dataType: "json",
+            success: function(data) {
+                console.log("GET equations " + JSON.stringify(data));
+                equationData = data
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("GET equations error " + textStatus + " " + errorThrown);
+                console.log("GET equations error incoming Text " + jqXHR.responseText);
+            }
+        });
+    }
+
     function getColors() {
         $.ajax({
             type: "GET",
@@ -334,6 +385,7 @@ $(document).ready(function() {
     function reset() {
         zoomMode = 0;
         zoomLevel = 0;
+        currentFractalRegion = null;
         $('#zoom-badge').html(zoomLevel);
         setFractal(selectedFractal.id);
     }
@@ -411,13 +463,26 @@ $(document).ready(function() {
           renderJuliaNavFractal(0,0);
      });*/
 
-    function clickFractalType() {
-        var $this = $(this);
-        type = $this.attr("value");
-        console.log("clickFractalType " + type);
-        if (selectedFractal.id == type) return;
+//    function clickFractalType() {
+//        var $this = $(this);
+//        type = $this.attr("value");
+//        console.log("clickFractalType " + type);
+//        if (selectedFractal.id == type) return;
+//        reset();
+//        setFractal(type);
+//        cX = -0.8;
+//        cY = -0.2249;
+//        resetZoomButtonClicked();
+//        renderFractal(0, 0);
+//        renderJuliaPreviewFractal();
+//        renderJuliaNavFractal(0, 0);
+//    }
+
+    function clickEquationType(type) {
+        console.log("clickEquationType " + type);
+        if (selectedEquation.id == type) return;
         reset();
-        setFractal(type);
+        setEquation(type);
         cX = -0.8;
         cY = -0.2249;
         resetZoomButtonClicked();
@@ -425,6 +490,7 @@ $(document).ready(function() {
         renderJuliaPreviewFractal();
         renderJuliaNavFractal(0, 0);
     }
+
 
     function clickFractalType(type) {
         console.log("clickFractalType " + type);
@@ -451,11 +517,11 @@ $(document).ready(function() {
         var offsetY = e.pageY - e.target.offsetTop - e.target.offsetParent.offsetTop - img.naturalHeight / 2;
         var percentOffsetX = offsetX / img.naturalWidth;
         var percentOffsetY = offsetY / img.naturalHeight;
-        var region = JSON.parse(getFractal(selectedFractal.parentId).region)
-        region.x += .25
+        var region = previewFractalRegion;
+        /*region.x += .25
         region.w -= .5
         region.y += .25
-        region.h -= .5
+        region.h -= .5*/
         var x = region.x + region.w / 2 + region.w * percentOffsetX
         var y = -(region.y + region.h / 2 + region.h * percentOffsetY)
         console.log("click julia-picker-image " + x + " " + y);

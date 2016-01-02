@@ -8,10 +8,10 @@ import java.nio.ByteBuffer;
  * @author bsheehan@baymoon.com
  * @date April 12, 2011
  * 
- * @name IFractal
+ * @name IFractalImage
  * @description Interface for fractal generator implementors
  */
-public interface IFractal {
+public interface IFractalImage {
 
 	/** Set the display resolution **/
 	public void setDims(int currDim, int currDim2);
@@ -41,13 +41,9 @@ public interface IFractal {
 	 */
 	public int getWidth();
 
-	/** Set the iterated fractal method for use when generating fractals **/
-	public void setFractalFunction(IIteratedFunction randomFunction);
 
 	/** Get the iterated fractal method for use when generating fractals **/
-	public IIteratedFunction getFractalFunction();
+	public IterableFractal getIterableFractal();
 
-	public void setScale(float f);
 
-//	public void assignColor(int blue);
 }

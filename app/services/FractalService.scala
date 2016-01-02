@@ -2,15 +2,15 @@ package services
 
 import java.util
 
-import org.bsheehan.fractal.{ColorInfo, ColorSet, FractalFactory, FractalInfo}
+import org.bsheehan.fractal._
 
 /**
  * Created by bob on 11/28/15.
  */
 object FractalService {
 
-  def getFractals : util.List[FractalInfo] = {
-     FractalFactory.getFractals
+  def getFractals : util.List[IterableFractal] = {
+     IterableFractalFactory.getFractals
   }
 
   def getColors : util.List[ColorInfo] = {

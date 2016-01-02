@@ -9,8 +9,10 @@ import java.util.Base64
 import javax.imageio.ImageIO
 
 import org.bsheehan.fractal.ColorSet.ColorSetType
-import org.bsheehan.fractal.IteratedFunctionFactory.FractalType
+import org.bsheehan.fractal.IterableFractalFactory.FractalType
 import org.bsheehan.fractal._
+import org.bsheehan.fractal.equation.EquationFactory.EquationType
+import org.bsheehan.fractal.equation.{complex, EquationFactory, Equation}
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, Controller}
@@ -26,24 +28,23 @@ import play.api.libs.json._
 
 object Application extends Controller {
 
-  val colorSetMap:mutable.Map[ColorSetType,ColorSet] = new mutable.HashMap[ColorSetType,ColorSet];
-  colorSetMap.put(ColorSetType.COLORMAP_EARTH, new ColorSet(2048, ColorSetType.COLORMAP_EARTH))
-  colorSetMap.put(ColorSetType.COLORMAP_SUNSET, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET))
-  colorSetMap.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
-  colorSetMap.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
-  colorSetMap.put(ColorSetType.COLORMAP_BLACK, new ColorSet(2048, ColorSetType.COLORMAP_BLACK))
-  colorSetMap.put(ColorSetType.COLORMAP_WHITE, new ColorSet(2048, ColorSetType.COLORMAP_WHITE))
-  colorSetMap.put(ColorSetType.COLORMAP_RGB, new ColorSet(2048, ColorSetType.COLORMAP_RGB))
-  colorSetMap.put(ColorSetType.COLORMAP_CMY, new ColorSet(2048, ColorSetType.COLORMAP_CMY))
-  colorSetMap.put(ColorSetType.COLORMAP_FIRE, new ColorSet(2048, ColorSetType.COLORMAP_FIRE))
-  colorSetMap.put(ColorSetType.COLORMAP_SNOW, new ColorSet(2048, ColorSetType.COLORMAP_SNOW))
-  colorSetMap.put(ColorSetType.COLORMAP_GRAY2, new ColorSet(2048, ColorSetType.COLORMAP_GRAY2))
-
+  val colorMapCache:mutable.Map[ColorSetType,ColorSet] = new mutable.HashMap[ColorSetType,ColorSet];
+  colorMapCache.put(ColorSetType.COLORMAP_EARTH, new ColorSet(2048, ColorSetType.COLORMAP_EARTH))
+  colorMapCache.put(ColorSetType.COLORMAP_SUNSET, new ColorSet(2048, ColorSetType.COLORMAP_SUNSET))
+  colorMapCache.put(ColorSetType.COLORMAP_GRAY, new ColorSet(2048, ColorSetType.COLORMAP_GRAY))
+  colorMapCache.put(ColorSetType.COLORMAP_BINARY, new ColorSet(2048, ColorSetType.COLORMAP_BINARY))
+  colorMapCache.put(ColorSetType.COLORMAP_BLACK, new ColorSet(2048, ColorSetType.COLORMAP_BLACK))
+  colorMapCache.put(ColorSetType.COLORMAP_WHITE, new ColorSet(2048, ColorSetType.COLORMAP_WHITE))
+  colorMapCache.put(ColorSetType.COLORMAP_RGB, new ColorSet(2048, ColorSetType.COLORMAP_RGB))
+  colorMapCache.put(ColorSetType.COLORMAP_CMY, new ColorSet(2048, ColorSetType.COLORMAP_CMY))
+  colorMapCache.put(ColorSetType.COLORMAP_FIRE, new ColorSet(2048, ColorSetType.COLORMAP_FIRE))
+  colorMapCache.put(ColorSetType.COLORMAP_SNOW, new ColorSet(2048, ColorSetType.COLORMAP_SNOW))
+  colorMapCache.put(ColorSetType.COLORMAP_GRAY2, new ColorSet(2048, ColorSetType.COLORMAP_GRAY2))
 
   val fractalService = FractalService
 
   def index = Action {
-    Ok(views.html.index("Fractal Scope"))
+    Ok(views.html.index("FractalImage Scope"))
   }
 
   // JSON converter for Rectangle2D.Float
@@ -56,21 +57,37 @@ object Application extends Controller {
     )
   }
 
+  def equations = Action {
+    implicit request => {
+      val eqnMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
+      val eqns: util.List[Equation] = EquationFactory.getEquations();
+      eqns.asScala.toList.foreach (node => {
+        val eqnMap: Map[String, String] = Map(
+          "id" -> node.getType.ordinal().toString,
+          "name" -> node.toString
+        )
+        eqnMapList.+=:(Json.toJson(eqnMap))
+      })
+
+      val eqnMapListMap: Map[String, ListBuffer[JsValue]] =  Map("equations" -> eqnMapList)
+      Ok(Json.toJson(eqnMapListMap)).as("application/json")
+    }
+  }
+  
   def fractals = Action {
       implicit request => {
 
-        val fractalInfos: util.List[FractalInfo] = fractalService.getFractals;
-
         val fractalMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
-        fractalInfos.asScala.toList.foreach (node => {
-          val fractal = models.Fractal(node.`type`.ordinal().toString, node.`parentType`.ordinal().toString, node.config.getFractalRegion, node.name, node.description)
+        val iterableFractals: util.List[IterableFractal] = IterableFractalFactory.getFractals();
+        iterableFractals.asScala.toList.foreach (node => {
+          //val fractal = models.FractalImage(node.getInfo.`type`.ordinal().toString, node.getInfo.name, node.getInfo.description)
 
           val fractalMap: Map[String, String] = Map(
-            "id" -> fractal.id,
-            "parentId" -> fractal.parentId,
-            "region" -> Json.toJson(fractal.region).toString(),
-            "name" -> fractal.name,
-            "description" -> fractal.description
+            "id" -> node.getInfo.`type`.ordinal().toString,
+            //"parentId" -> fractal.parentId,
+            //"region" -> Json.toJson(fractal.region).toString(),
+            "name" -> node.getInfo.name,
+            "description" -> node.getInfo.description
           )
           fractalMapList.+=:(Json.toJson(fractalMap))
         })
@@ -118,42 +135,52 @@ object Application extends Controller {
     {
       implicit request =>
 
-      def createFractal(fractalType: IteratedFunctionFactory.FractalType): IFractal = {
-        val fractal: IFractal = new org.bsheehan.fractal.Fractal(IteratedFunctionFactory.createIteratedFunction(fractalType))
+      def createFractal(fractalType: IterableFractalFactory.FractalType, equationType: EquationType): IFractalImage = {
+        val fractal: IFractalImage = new org.bsheehan.fractal.FractalImage(IterableFractalFactory.createIterableFractal2(fractalType, equationType))
         return fractal
       }
 
       val json = request.body.asJson.get
       val region = json \ "region"
-      //val region = Json.parse(regionStr.toString())
       val imageSize = json \ "size"
       val julia: JsValue = json \ "julia"
       val colorId: JsValue = json \ "colorId"
+      val equationId: JsValue = json \ "equationId"
       val id: JsValue = json \ "id"
 
       val colorSetId: ColorSetType = ColorSetType.values()(colorId.as[String].toInt)
-      val fractalId: FractalType = FractalType.values()(id.as[String].toInt)
+      val equationType: EquationType = EquationType.values()(equationId.as[String].toInt)
+      val fractalType: FractalType = FractalType.values()(id.as[String].toInt)
 
-      val rect = new Rectangle2D.Double((region \ "x").as[Double],
-      (region \ "y").as[Double],
-      (region \ "w").as[Double],
-      (region \ "h").as[Double])
+      val fractal: IFractalImage = createFractal(fractalType, equationType)
+      var rect:Rectangle2D.Double = null;
+      if (region != JsNull) {
+         rect = new Rectangle2D.Double((region \ "x").as[Double],
+          (region \ "y").as[Double],
+          (region \ "w").as[Double],
+          (region \ "h").as[Double])
+          fractal.getIterableFractal.getInfo.config.setFractalRegion(rect)
+      }else {
+        //special case Quadratic Mandelbrot !
+        if (fractalType.equals(FractalType.MANDELBROT) && equationType.equals(EquationType.QUADRATIC)) {
+          rect = new Rectangle2D.Double(-2.0, -1.5, 3.0, 3.0);
+          fractal.getIterableFractal.getInfo.config.setFractalRegion(rect);
+        }
+        else
+          rect = fractal.getIterableFractal.getInfo.config.getFractalRegion
+      }
 
-      val fractal: IFractal = createFractal(fractalId)
 
-      fractal.getFractalFunction.getConfig.setFractalRegion(rect)
       if (julia.as[JsObject].fields.size != 0)
-        fractal.getFractalFunction.getConfig.zConstant = new Complex((julia \ "x").as[Double], (julia \ "y").as[Double]);
+        fractal.getIterableFractal.getInfo.config.zConstant = new complex.Complex((julia \ "x").as[Double], (julia \ "y").as[Double]);
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
-      if (fractalId ==FractalType.MANDELBROT_CUBIC_JULIA ||
-        fractalId==FractalType.MANDELBROT_JULIA ||
-        fractalId==FractalType.MANDELBROT_QUARTIC_JULIA)
+      if (fractalType == FractalType.JULIA)
         fractal.generate(true);
       else
         fractal.generate(false);
 
-      fractal.setColorSet(colorSetMap.get(colorSetId).get)
+      fractal.setColorSet(colorMapCache.get(colorSetId).get)
       fractal.assignColors()
       val buffer: ByteBuffer = fractal.getBufferColors
       buffer.rewind()
@@ -176,7 +203,12 @@ object Application extends Controller {
 
       val encodedBytes: Array[Byte] = Base64.getEncoder.encode(bytes)
 
-      Ok(encodedBytes)
+      val result: Map[String, String] = Map(
+        "image" -> Base64.getEncoder.encodeToString(bytes),
+        "region" -> Json.toJson(rect).toString()
+      )
+
+      Ok(Json.toJson(result)).as("application/json")
     }
   }
 }

@@ -1,4 +1,4 @@
-package org.bsheehan.fractal;
+package org.bsheehan.fractal.equation.complex;
 
 /** 
  * NOT WRITTEN BY BSHEEHAN@BAYMOON.COM. Some edits were made however.
@@ -152,6 +152,18 @@ public class Complex {
 	public Complex squaredAdd(Complex c) {
 
 		this.squaredR = this.r*this.r;
+		this.squaredI = this.i*this.i;
+		this.mag = this.squaredR + this.squaredI;
+		double r2 = this.squaredR - this.squaredI  + c.r;
+		this.i = 2.0*this.r*this.i + c.i;
+		this.r = r2;
+
+		return this;
+	}
+
+	public Complex expAdd(Complex c) {
+
+		double term1 = Math.sin(this.r);
 		this.squaredI = this.i*this.i;
 		this.mag = this.squaredR + this.squaredI;
 		double r2 = this.squaredR - this.squaredI  + c.r;

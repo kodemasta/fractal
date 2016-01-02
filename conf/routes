@@ -5,6 +5,7 @@
 GET     /                           controllers.Application.index()
 POST    /fractal                    controllers.Application.fractal()
 GET     /fractals                   controllers.Application.fractals()
+GET     /equations                  controllers.Application.equations()
 PUT     /color                      controllers.Application.color()
 GET     /colors                     controllers.Application.colors()
 

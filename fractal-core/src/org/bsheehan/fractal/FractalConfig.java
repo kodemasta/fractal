@@ -1,19 +1,32 @@
 package org.bsheehan.fractal;
 
+import org.bsheehan.fractal.equation.Equation;
+import org.bsheehan.fractal.equation.complex.Complex;
+import org.bsheehan.fractal.equation.complex.Quadratic;
+
 import java.awt.*;
 
 public class FractalConfig {
 
-	public FractalConfig(double left, double top, double right, double bottom)
+	public FractalConfig()
+	{
+		this.setFractalRegion(new Rectangle.Double(-2.0, -2.0, 4.0, 4.0));
+		this.equation = new Quadratic();
+	}
+
+	public FractalConfig(Equation equation, double left, double top, double right, double bottom)
 	{
 		this.setFractalRegion(new Rectangle.Double(left, top, right - left, bottom - top));
+		this.equation = equation;
 	}
+
+	public Equation equation;
 
 	/** This is a limit for the iteration to break at. Successive iterations will
 	 * converge or diverge at a particular rate based on the initial location and iterative
 	 * function in the complex plane. The 'velocity' of the iteration escape is the metric used to
 	 * map an RGB color for function display **/
-	protected double escapeRadius = 128.0;
+	protected double escapeRadius = 4.0;
 
 	/** This is a maximum limit on number of iterations if escape radius not met. This is a critical
 	 * parameter and directly maps to the runtime memory footprint of the application. Larger values
@@ -50,4 +63,7 @@ public class FractalConfig {
 		this.zConstant = c;
 	}
 
+	public short iterate(Complex z, Complex c) {
+		return equation.iterate(z, c, maxIterations, escapeRadius);
+	}
 }
