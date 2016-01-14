@@ -1,7 +1,7 @@
 package org.bsheehan.fractal;
 
 import org.bsheehan.fractal.equation.Equation;
-import org.bsheehan.fractal.equation.complex.Complex;
+import org.bsheehan.fractal.equation.complex.ComplexNumber;
 import org.bsheehan.fractal.equation.complex.Quadratic;
 
 import java.awt.*;
@@ -37,10 +37,10 @@ public class FractalConfig {
 	protected Rectangle.Double fractalRegion;
 
 	/** The complex quadratic constant used during iteration **/
-	public Complex zConstant = new Complex(0, 0);
+	public ComplexNumber zConstant = new ComplexNumber(0, 0);
 
 	/** The complex starting origin used during iteration **/
-	public Complex zOrigin = new Complex(0, 0);
+	public ComplexNumber zOrigin = new ComplexNumber(0, 0);
 
 	public short getMaxIterations() {
 		return maxIterations;
@@ -58,12 +58,16 @@ public class FractalConfig {
 	/**
 	 * For each iteration for the function set the initial values on the complex plane.
 	 */
-	public void setInitialConditions(Complex z0, Complex c) {
+	public void setInitialConditions(ComplexNumber z0, ComplexNumber c) {
 		this.zOrigin = z0;
 		this.zConstant = c;
 	}
 
-	public short iterate(Complex z, Complex c) {
+	public short iterate(ComplexNumber z, ComplexNumber c) {
 		return equation.iterate(z, c, maxIterations, escapeRadius);
 	}
+
+	//public Complex getLastRoot(){
+//		return equation.getLastRoot();
+//	}
 }

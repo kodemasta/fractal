@@ -1,8 +1,7 @@
 package org.bsheehan.fractal.equation;
 
-import org.bsheehan.fractal.equation.complex.Cubic;
-import org.bsheehan.fractal.equation.complex.Quadratic;
-import org.bsheehan.fractal.equation.complex.Quartic;
+import org.bsheehan.fractal.IterableFractalFactory;
+import org.bsheehan.fractal.equation.complex.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +15,36 @@ public class EquationFactory {
         NONE,
         QUADRATIC,
         CUBIC,
-        QUARTIC
-    };
+        QUARTIC,
+        QUINTIC,
+        SINE,
+        NOVA,
 
-    public static List<Equation> getEquations()
+        CUBIC_NEWTON,
+        QUINTIC_NEWTON,
+        SINE_NEWTON
+     };
+
+    public static List<Equation> getEquations(IterableFractalFactory.FractalType fractalType)
     {
         List<Equation> eqns = new ArrayList<Equation>();
-        eqns.add(new Quartic());
-        eqns.add(new Cubic());
-        eqns.add(new Quadratic());
+        if ( (fractalType.getValue() == IterableFractalFactory.FractalType.MANDELBROT.getValue()) ||
+                (fractalType.getValue() == IterableFractalFactory.FractalType.JULIA.getValue()))
+        {
+            //eqns.add(new Nova());
+            ///eqns.add(new Sine());
+            eqns.add(new Quintic());
+            eqns.add(new Quartic());
+            eqns.add(new Cubic());
+            eqns.add(new Quadratic());
+        } else if (fractalType.getValue() == IterableFractalFactory.FractalType.NEWTON.getValue()) {
+            eqns.add(new NewtonQuintic());
+            eqns.add(new NewtonCubic());
+            eqns.add(new NewtonSine());
+        }
+        else
+            throw new RuntimeException("no equations found for fractal type: " + fractalType.toString());
+
         return eqns;
     }
 }

@@ -12,7 +12,8 @@ import org.bsheehan.fractal.ColorSet.ColorSetType
 import org.bsheehan.fractal.IterableFractalFactory.FractalType
 import org.bsheehan.fractal._
 import org.bsheehan.fractal.equation.EquationFactory.EquationType
-import org.bsheehan.fractal.equation.{complex, EquationFactory, Equation}
+import org.bsheehan.fractal.equation.complex.ComplexNumber
+import org.bsheehan.fractal.equation.{Equation, EquationFactory}
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, Controller}
@@ -59,8 +60,13 @@ object Application extends Controller {
 
   def equations = Action {
     implicit request => {
+      val queryString: Map[String, Seq[String]] = request.queryString;
+      val id: String = queryString.get("id").get.head
+
+      val fractalType: FractalType = FractalType.get(id.toInt)
+
       val eqnMapList: ListBuffer[JsValue] = new ListBuffer[JsValue]()
-      val eqns: util.List[Equation] = EquationFactory.getEquations();
+      val eqns: util.List[Equation] = EquationFactory.getEquations(fractalType);
       eqns.asScala.toList.foreach (node => {
         val eqnMap: Map[String, String] = Map(
           "id" -> node.getType.ordinal().toString,
@@ -83,7 +89,7 @@ object Application extends Controller {
           //val fractal = models.FractalImage(node.getInfo.`type`.ordinal().toString, node.getInfo.name, node.getInfo.description)
 
           val fractalMap: Map[String, String] = Map(
-            "id" -> node.getInfo.`type`.ordinal().toString,
+            "id" -> node.getInfo.`type`.getValue().toString,
             //"parentId" -> fractal.parentId,
             //"region" -> Json.toJson(fractal.region).toString(),
             "name" -> node.getInfo.name,
@@ -136,8 +142,11 @@ object Application extends Controller {
       implicit request =>
 
       def createFractal(fractalType: IterableFractalFactory.FractalType, equationType: EquationType): IFractalImage = {
-        val fractal: IFractalImage = new org.bsheehan.fractal.FractalImage(IterableFractalFactory.createIterableFractal2(fractalType, equationType))
-        return fractal
+        //todo use fractal factory
+        //if (fractalType.equals(FractalType.NEWTON))
+        //  return new org.bsheehan.fractal.NewtonFractalImage(IterableFractalFactory.createIterableFractal2(fractalType, equationType))
+        //else
+          return new org.bsheehan.fractal.FractalImage(IterableFractalFactory.createIterableFractal2(fractalType, equationType))
       }
 
       val json = request.body.asJson.get
@@ -150,7 +159,7 @@ object Application extends Controller {
 
       val colorSetId: ColorSetType = ColorSetType.values()(colorId.as[String].toInt)
       val equationType: EquationType = EquationType.values()(equationId.as[String].toInt)
-      val fractalType: FractalType = FractalType.values()(id.as[String].toInt)
+      val fractalType: FractalType = FractalType.get(id.as[String].toInt)
 
       val fractal: IFractalImage = createFractal(fractalType, equationType)
       var rect:Rectangle2D.Double = null;
@@ -170,12 +179,11 @@ object Application extends Controller {
           rect = fractal.getIterableFractal.getInfo.config.getFractalRegion
       }
 
-
       if (julia.as[JsObject].fields.size != 0)
-        fractal.getIterableFractal.getInfo.config.zConstant = new complex.Complex((julia \ "x").as[Double], (julia \ "y").as[Double]);
+        fractal.getIterableFractal.getInfo.config.zConstant = new ComplexNumber((julia \ "x").as[Double], (julia \ "y").as[Double]);
 
       fractal.setDims((imageSize \ "w").as[Int], (imageSize \ "h").as[Int])
-      if (fractalType == FractalType.JULIA)
+      if (fractalType == FractalType.JULIA || fractalType == FractalType.NEWTON)
         fractal.generate(true);
       else
         fractal.generate(false);

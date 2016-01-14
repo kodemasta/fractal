@@ -1,6 +1,5 @@
 package org.bsheehan.fractal;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 

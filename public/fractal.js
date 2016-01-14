@@ -14,51 +14,20 @@ $(document).ready(function() {
     var computing = false;
     var computingJulia = false;
     var selectedSize = "512";
+    var initFractalType = 1;
     $("#size-select").val(selectedSize).change();
     init();
 
+
     function init() {
-        getEquations();
+        getEquations(initFractalType);
         getFractals();
         getColors();
-        for (var i = 0; i < fractalData.fractals.length; i++) {
-            console.log("fractal-select append " + fractalData.fractals[i].id + " " + fractalData.fractals[i].name);
-            var option = '<option value="' + fractalData.fractals[i].id + '" id="fractal-select' + fractalData.fractals[i].id + '">' + fractalData.fractals[i].name + '</option>';
-            $("#fractal-select").append(option);
-        }
-        for (var i = 0; i < colorData.colors.length; i++) {
-            console.log("color-select append " + colorData.colors[i].id + " " + colorData.colors[i].name);
-            var option = '<option value="' + colorData.colors[i].id + '" id="color-select' + colorData.colors[i].id + '">' + colorData.colors[i].name + '</option>';
-            $("#color-select").append(option);
-        }
-        for (var i = 0; i < equationData.equations.length; i++) {
-            console.log("equation-select append " + equationData.equations[i].id + " " + equationData.equations[i].name);
-            var option = '<option value="' + equationData.equations[i].id + '" id="equation-select' + equationData.equations[i].id + '">' + equationData.equations[i].name + '</option>';
-            $("#equation-select").append(option);
-        }
-
-        $("select#color-select").change(function(){
-           clickColor($(this).children(":selected").val())
-        });
 
         $("select#size-select").change(function(){
            clickSize($(this).children(":selected").val())
         });
 
-        $("select#fractal-select").change(function(){
-           clickFractalType($(this).children(":selected").val())
-        });
-
-        $("select#equation-select").change(function(){
-           clickEquationType($(this).children(":selected").val())
-        });
-
-        setEquation(1)
-        setFractal(1)
-        setColor(2)
-        var colorOption = document.getElementById('color-select');
-        $(colorOption).val(2);
-        $(colorOption).change();
         resetZoomButtonClicked();
         $('#fractal-loading').toggle();
         $('#julia-picker').hide();
@@ -80,6 +49,7 @@ $(document).ready(function() {
             $("#color-select").prop("disabled", true);
             $('.input-number').prop("disabled", true);
             $("#reset-button2").prop("disabled", true);
+            $("#equation-select").prop("disabled", true);
       } else {
             computing = false;
             jQuery('#fractal-loading').hide();
@@ -92,6 +62,7 @@ $(document).ready(function() {
             $("#fractal-select").prop("disabled", false);
             $('.input-number').prop("disabled", false);
             $("#reset-button2").prop("disabled", false);
+            $("#equation-select").prop("disabled", false);
        }
     }
 
@@ -340,6 +311,19 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("GET fractals " + JSON.stringify(data));
                 fractalData = data
+                $("#fractal-select").empty();
+                for (var i = 0; i < fractalData.fractals.length; i++) {
+                    console.log("fractal-select append " + fractalData.fractals[i].id + " " + fractalData.fractals[i].name);
+                    var option = '<option value="' + fractalData.fractals[i].id + '" id="fractal-select' + fractalData.fractals[i].id + '">' + fractalData.fractals[i].name + '</option>';
+                    $("#fractal-select").append(option);
+                }
+
+                $("select#fractal-select").change(function(){
+                   clickFractalType($(this).children(":selected").val())
+                });
+
+                setFractal(initFractalType)
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("GET fractals error " + textStatus + " " + errorThrown);
@@ -348,15 +332,26 @@ $(document).ready(function() {
         });
     }
 
-    function getEquations() {
+    function getEquations(fractalId) {
         $.ajax({
             type: "GET",
-            url: "equations",
+            url: "equations?"+"id="+fractalId,
             async: false,
             dataType: "json",
             success: function(data) {
                 console.log("GET equations " + JSON.stringify(data));
-                equationData = data
+                $("#equation-select").empty();
+                equationData = data;
+                for (var i = 0; i < equationData.equations.length; i++) {
+                    console.log("equation-select append " + equationData.equations[i].id + " " + equationData.equations[i].name);
+                    var option = '<option value="' + equationData.equations[i].id + '" id="equation-select' + equationData.equations[i].id + '">' + equationData.equations[i].name + '</option>';
+                    $("#equation-select").append(option);
+                }
+                $("select#equation-select").change(function(){
+                   clickEquationType($(this).children(":selected").val())
+                });
+
+                setEquation(equationData.equations[0].id) //default
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("GET equations error " + textStatus + " " + errorThrown);
@@ -374,6 +369,20 @@ $(document).ready(function() {
             success: function(data) {
                 colorData = data
                 console.log("GET colors " + JSON.stringify(data));
+                for (var i = 0; i < colorData.colors.length; i++) {
+                    console.log("color-select append " + colorData.colors[i].id + " " + colorData.colors[i].name);
+                    var option = '<option value="' + colorData.colors[i].id + '" id="color-select' + colorData.colors[i].id + '">' + colorData.colors[i].name + '</option>';
+                    $("#color-select").append(option);
+                }
+
+                $("select#color-select").change(function(){
+                   clickColor($(this).children(":selected").val())
+                });
+                setColor(2)
+                //var colorOption = document.getElementById('color-select');
+                $("#color-select").val(2);
+                $("#color-select").change();
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("GET colors error " + textStatus + " " + errorThrown);
@@ -496,6 +505,8 @@ $(document).ready(function() {
         console.log("clickFractalType " + type);
         if (selectedFractal.id == type) return;
         reset();
+        getEquations(type);
+        setEquation(1)
         setFractal(type);
         cX = -0.8;
         cY = -0.2249;

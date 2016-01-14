@@ -1,6 +1,6 @@
 package org.bsheehan.fractal;
 
-import org.bsheehan.fractal.equation.complex.Complex;
+import org.bsheehan.fractal.equation.complex.ComplexNumber;
 
 import java.awt.*;
 import java.nio.ByteBuffer;
@@ -13,23 +13,23 @@ import java.nio.ByteBuffer;
  * @description This class wraps the complete fractal state, including the
  * fractal function, color set, array of iteration values, and color pixel buffer.
  * 
- * This is implements IFractalImage which specifies services required to be a fractal generator class.
+ * This is implements IFractalImage which specifies services required to be a fractal image renderer class.
  */
 public class FractalImage implements IFractalImage {
 
 	// holds the RGB color values that represent the visual fractal
-	private ByteBuffer rgbBuffer;
+	protected ByteBuffer rgbBuffer;
 
 	// buffer for collecting each pixel's generated iteration value
-	private short[][] iterationBuffer;
+	protected short[][] iterationBuffer;
 
 	// function that represents the mathematical fractal iteration function
-	private IterableFractal iterableFractal;
+	protected IterableFractal iterableFractal;
 
 	// color set used to map from iteration buffer values to pixelBuffer RGB  values
 	protected ColorSet rgbColorSet;
-	
-	private Complex c = new Complex(0, 0);
+
+	protected ComplexNumber c = new ComplexNumber(0, 0);
 
 	// this is used by algorithms to determine if a particular fractal region
 	// has interesting visual heuristics
@@ -37,12 +37,12 @@ public class FractalImage implements IFractalImage {
 	protected int iterationHistogramTotal = 0;
 
 	// width and height of fractal in screen space
-	private int screenWidth, screenHeight;
+	protected int screenWidth, screenHeight;
 
 	// ARGB pixel format size
-	final private int kNumColorSpaceComponents = 3;
-	
-	private float screenAspectRatio = 1.0f;
+	final protected int kNumColorSpaceComponents = 3;
+
+	protected float screenAspectRatio = 1.0f;
 
 	/**
 	 * Constructor
@@ -74,7 +74,6 @@ public class FractalImage implements IFractalImage {
 	 */
 	public void assignColors() {
 
-
 		this.rgbBuffer.clear();
 		byte colorMap[][] = this.rgbColorSet.getColors();
 		for (int i = 0 ; i < this.screenWidth; i++){
@@ -105,7 +104,7 @@ public class FractalImage implements IFractalImage {
 		return generate(this.rgbBuffer, this.screenWidth, this.screenHeight, julia);
 	}
 
-	private boolean generate(ByteBuffer buffer, int width, int height, boolean julia) {
+	protected boolean generate(ByteBuffer buffer, int width, int height, boolean julia) {
 		final double kConvertPixelToRealAxis = (double)this.iterableFractal.getInfo().config.getFractalRegion().getWidth()
 		/ width;
 		final double kConvertPixelToImagAxis = (double)this.iterableFractal.getInfo().config.getFractalRegion().getHeight()
@@ -122,20 +121,19 @@ public class FractalImage implements IFractalImage {
 		// plane.
 		// outer loop iterates over imaginary axis of specified region
 
-
-		Complex c = new Complex(this.iterableFractal.getInfo().config.zConstant);
-		Complex z = new Complex(this.iterableFractal.getInfo().config.zOrigin);
+		ComplexNumber c = new ComplexNumber(this.iterableFractal.getInfo().config.zConstant);
+		ComplexNumber z = new ComplexNumber(this.iterableFractal.getInfo().config.zOrigin);
 
 		if (!julia) {
 			// mandelbrot iteration
 			for (int pixelY = 0; pixelY < height; pixelY++) {
 				// convert pixel y coordinate to imaginary component of zConstant, cy
-				c.i = kConvertPixelToImagAxis * pixelY + minY; //top
+				c.b = kConvertPixelToImagAxis * pixelY + minY; //top
 				// inner loop iterates over real axis of specified region
 				for (int pixelX = 0; pixelX < width; pixelX++) {
 					// convert pixel x coordinate to real component of zConstant, cx
-					c.r = kConvertPixelToRealAxis * pixelX + minX; //left
-					z.setValues(this.iterableFractal.getInfo().config.zOrigin);
+					c.a = kConvertPixelToRealAxis * pixelX + minX; //left
+					z.set(this.iterableFractal.getInfo().config.zOrigin);
 					this.iterationBuffer[pixelY][pixelX] = this.iterableFractal.iterate(z, c);
 
 					//this.iterationHistogram[numIterations]++;
@@ -148,12 +146,12 @@ public class FractalImage implements IFractalImage {
 			// julia iteration
 			for (int pixelY = 0; pixelY < height; pixelY++) {
 				// convert pixel y coordinate to imaginary component of zConstant, cy
-				z.i = kConvertPixelToImagAxis * pixelY + minY; //top
+				z.b = kConvertPixelToImagAxis * pixelY + minY; //top
 				// inner loop iterates over real axis of specified region
 				for (int pixelX = 0; pixelX < width; pixelX++) {
 					// convert pixel x coordinate to real component of zConstant, cx
-					z.r = kConvertPixelToRealAxis * pixelX + minX; //left
-					c.setValues(this.iterableFractal.getInfo().config.zConstant);
+					z.a = kConvertPixelToRealAxis * pixelX + minX; //left
+					c.set(this.iterableFractal.getInfo().config.zConstant);
 					this.iterationBuffer[pixelY][pixelX] = this.iterableFractal.iterate(z, c);
 
 					//this.iterationHistogram[numIterations]++;

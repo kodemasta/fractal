@@ -2,12 +2,11 @@ package org.bsheehan.fractal.equation.complex;
 
 import org.bsheehan.fractal.equation.Equation;
 import org.bsheehan.fractal.equation.EquationFactory;
-import org.bsheehan.fractal.equation.Utils;
 
 /**
  * Created by bob on 12/27/15.
  */
-public class Quadratic implements Equation {
+public class Quintic implements Equation {
 
     @Override
     public short iterate(double x, double c) {
@@ -16,12 +15,13 @@ public class Quadratic implements Equation {
 
     @Override
     public short iterate(ComplexNumber z, ComplexNumber c, short limit, double escape) {
+        //ComplexNumber z2 = new ComplexNumber(z.r, z.i);
+        //ComplexNumber c2 = new ComplexNumber(c.r, c.i);
 
-        if (Utils.isPointInCardioidBulbs(c))
-            return (short)(limit-1);
-
+        // if recursive calls do not create escaping orbit, then return the max
+        // iteration allowed.
         for (short i = 0; i < limit; ++i) {
-            z = z.mult(z).add(c);
+            z=z.mult(z).mult(z).mult(z).mult(z).add(c);
             if (z.norm() > escape)
                 return i;
         }
@@ -30,12 +30,12 @@ public class Quadratic implements Equation {
 
     @Override
     public String toString(){
-        return "Quadratic: f(z) = z^2 + c";
+        return "Quintic: f(z) = z^5 + c";
     }
 
     @Override
     public EquationFactory.EquationType getType() {
-        return EquationFactory.EquationType.QUADRATIC;
+        return EquationFactory.EquationType.QUINTIC;
     }
 
 //    @Override

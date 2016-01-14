@@ -1,6 +1,6 @@
 package org.bsheehan.fractal;
 
-import org.bsheehan.fractal.equation.complex.Complex;
+import org.bsheehan.fractal.equation.complex.ComplexNumber;
 
 /**
  * Created by bob on 12/27/15.
@@ -18,7 +18,12 @@ public class Mandelbrot implements IterableFractal {
     }
 
     @Override
-    public short iterate(Complex z, Complex c) {
+    public short iterate(ComplexNumber z, ComplexNumber c) {
         return fractalInfo.config.iterate(z, c);
     }
+
+//    @Override
+//    public Complex getLastRoot() {
+//        return fractalInfo.config.getLastRoot();
+//    }
 }

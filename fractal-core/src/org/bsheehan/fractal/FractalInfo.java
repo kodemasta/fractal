@@ -1,5 +1,6 @@
 package org.bsheehan.fractal;
 
+
 /**
  * Created by bob on 11/28/15.
  */
@@ -22,6 +23,5 @@ public class FractalInfo {
         this.description = description;
         this.name = name;
         this.config = new FractalConfig();
-
     }
 }

@@ -14,14 +14,14 @@ public class Quartic implements Equation {
     }
 
     @Override
-    public short iterate(Complex z, Complex c, short limit, double escape) {
-        Complex z2 = new Complex(z);
+    public short iterate(ComplexNumber z, ComplexNumber c, short limit, double escape) {
 
         // if recursive calls do not create escaping orbit, then return the max
         // iteration allowed.
         for (short i = 0; i < limit; ++i) {
-            z2.quarticAdd(c);
-            if (z2.mag > escape)
+            z=z.mult(z);
+            z=z.mult(z).add(c);
+            if (z.norm() > escape)
                 return i;
         }
         return (short)(limit-1);
@@ -29,11 +29,16 @@ public class Quartic implements Equation {
 
     @Override
     public String toString(){
-        return "f(z) = z^4 + c";
+        return "Quartic: f(z) = z^4 + c";
     }
 
     @Override
     public EquationFactory.EquationType getType() {
         return EquationFactory.EquationType.QUARTIC;
     }
+
+//    @Override
+//    public Complex getLastRoot(){
+//        return null;
+//    }
 }

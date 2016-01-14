@@ -1,6 +1,6 @@
 package org.bsheehan.fractal.equation;
 
-import org.bsheehan.fractal.equation.complex.Complex;
+import org.bsheehan.fractal.equation.complex.ComplexNumber;
 
 /**
  * Created by bob on 12/27/15.
@@ -13,10 +13,10 @@ public class Utils {
      * @param z
      * @return
      */
-    public static boolean isPointInCardioidBulbs(Complex z) {
+    public static boolean isPointInCardioidBulbs(ComplexNumber z) {
 
-        final double term1 = z.r -.25;
-        final double term2 = z.i*z.i;
+        final double term1 = z.re() -.25;
+        final double term2 = z.im()*z.im();
         final double q = term1*term1 + term2;
         return q*(q+term1) < .25*term2;
     }

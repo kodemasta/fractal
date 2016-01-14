@@ -1,10 +1,7 @@
 package org.bsheehan.fractal;
 
-import org.bsheehan.fractal.equation.Equation;
 import org.bsheehan.fractal.equation.EquationFactory;
-import org.bsheehan.fractal.equation.complex.Cubic;
-import org.bsheehan.fractal.equation.complex.Quadratic;
-import org.bsheehan.fractal.equation.complex.Quartic;
+import org.bsheehan.fractal.equation.complex.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +12,33 @@ import java.util.List;
 public class IterableFractalFactory {
 
     public enum FractalType {
-        NONE,
-        MANDELBROT,
-        JULIA
-        //MANDELBROT_CUBIC,
-        //MANDELBROT_JULIA,
-        //MANDELBROT_CUBIC_JULIA,
-        //MANDELBROT_QUARTIC,
-        //MANDELBROT_QUARTIC_JULIA
+        MANDELBROT(1),
+        JULIA(2),
+        NEWTON(4);
+
+        private int value;
+
+        FractalType(int value) {
+            this.value = value;
+        }
+
+        public int getValue(){
+            return value;
+        }
+
+        static public FractalType get(int value){
+            for (FractalType type: FractalType.values()){
+                if (type.getValue() == value)
+                    return type;
+            }
+            return null;
+        }
     };
 
     public static List<IterableFractal> getFractals() {
         List<IterableFractal> fractals = new ArrayList<>();
 
+        fractals.add(createIterableFractal(FractalType.NEWTON));
         fractals.add(createIterableFractal(IterableFractalFactory.FractalType.JULIA));
         fractals.add(createIterableFractal(IterableFractalFactory.FractalType.MANDELBROT));
 
@@ -55,6 +66,30 @@ public class IterableFractalFactory {
                 config = new FractalConfig(new Quartic(), -1.75, -1.75, 1.75, 1.75);
                 break;
             }
+            case QUINTIC: {
+                config = new FractalConfig(new Quintic(), -1.75, -1.75, 1.75, 1.75);
+                break;
+            }
+            case SINE: {
+                config = new FractalConfig(new Sine(), -1.75, -1.75, 1.75, 1.75);
+                break;
+            }
+            case NOVA: {
+                config = new FractalConfig(new Nova(), -1.75, -1.75, 1.75, 1.75);
+                break;
+            }
+            case SINE_NEWTON: {
+                config = new FractalConfig(new NewtonSine(), -2.0, -2.0, 2.0, 2.0);
+                break;
+            }
+            case CUBIC_NEWTON: {
+                config = new FractalConfig(new NewtonCubic(), -2.0, -2.0, 2.0, 2.0);
+                break;
+            }
+            case QUINTIC_NEWTON: {
+                config = new FractalConfig(new NewtonQuintic(), -2.0, -2.0, 2.0, 2.0);
+                break;
+            }
         }
 
         switch (type) {
@@ -71,6 +106,14 @@ public class IterableFractalFactory {
                         FractalType.JULIA,
                         "Julia",
                         "Julia",
+                        config);
+                return new Mandelbrot(fractalInfo);
+            }
+            case NEWTON: {
+                FractalInfo fractalInfo = new FractalInfo(
+                        FractalType.NEWTON,
+                        "Newton",
+                        "Newton",
                         config);
                 return new Mandelbrot(fractalInfo);
             }        }
@@ -96,6 +139,13 @@ public class IterableFractalFactory {
                         IterableFractalFactory.FractalType.JULIA,
                          "Julia ",
                         "Julia");
+                return new Mandelbrot(fractalInfo);
+            }
+            case NEWTON: {
+                FractalInfo fractalInfo = new FractalInfo(
+                        FractalType.NEWTON,
+                        "Newton ",
+                        "Newton");
                 return new Mandelbrot(fractalInfo);
             }
         }
