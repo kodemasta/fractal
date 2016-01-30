@@ -183,7 +183,7 @@ $(document).ready(function() {
                 "id": selectedFractal.id,
                 "equationId": selectedEquation.id,
                 "colorId": selectedColor.id,
-                "region": currentFractalRegion, //JSON.parse(getFractal(selectedFractal.id).region),
+                "region": null,
                 "size": {
                     "w": width,
                     "h": height
