@@ -73,9 +73,9 @@ $(document).ready(function() {
         if (toggle) {
             computingJulia = true;
             jQuery('#julia-fractal-loading').show();
-            $(fractalImage).attr("style", 'border: 2px solid #00AA00;');
+            //$(fractalImage).attr("style", 'border: 2px solid #00AA00;');
             $(previewImage).attr("style", 'border: 2px solid #00AA00;');
-            $(pickerImage).attr("style", 'border: 2px solid #00AA00;');
+            //$(pickerImage).attr("style", 'border: 2px solid #00AA00;');
 
             $(fractalImage).prop("disabled", true);
             $(previewImage).prop("disabled", true);
@@ -83,13 +83,13 @@ $(document).ready(function() {
        } else {
             computingJulia = false;
             jQuery('#julia-fractal-loading').hide();
-            $(fractalImage).attr("style", 'cursor:crosshair;');
+            //$(fractalImage).attr("style", 'cursor:crosshair;');
             $(previewImage).attr("style", '');
-            $(pickerImage).attr("style", 'cursor:crosshair');
+            //$(pickerImage).attr("style", 'cursor:crosshair');
 
-            $(fractalImage).prop("disabled", false);
+            //$(fractalImage).prop("disabled", false);
             $(previewImage).prop("disabled", false);
-            $(pickerImage).prop("disabled", false);
+            //$(pickerImage).prop("disabled", false);
         }
     }
 

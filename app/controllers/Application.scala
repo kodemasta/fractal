@@ -1,22 +1,28 @@
 package controllers
 
 import java.awt.geom.Rectangle2D
-import com.google.inject.Inject
+//import com.google.inject.Inject
 import org.bsheehan.fractal.ColorSet.ColorSetType
 import org.bsheehan.fractal.IterableFractalFactory.FractalType
 import org.bsheehan.fractal.equation.EquationFactory.EquationType
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Controller}
-import services.IFractalService
+import services.{FractalService, IFractalService}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.libs.json._
 
-class Application @Inject() (fractalService:IFractalService) extends Controller {
+
+//class Application @Inject() (fractalService:IFractalService) extends Controller {
+
+object Application extends Controller {
+
+
+  val fractalService:IFractalService = new FractalService()
 
   def index = Action {
-    Ok(views.html.index("FractalScope"))
+    Ok(views.html.index("Fractal Scope"))
   }
 
   def equations: Action[AnyContent] = Action.async {
